@@ -1,0 +1,233 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <title>Đăng nhập - Quản trị hệ thống - Purchasing</title>
+    @*SEO tags*@
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Digital Innovation">
+    @*SEO tags end*@
+    <link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
+    <link rel="shortcut icon" href="~/admin/assets/dionBranch/dion-square.png" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+    <link href="~/admin/assets/css/style.bundle.css" rel="stylesheet" />
+    <link href="~/admin/assets/plugins/global/plugins.bundle.css" rel="stylesheet" asp-append-version="true" />
+    <script src="~/js/http-service.js" asp-append-version="true"></script>
+    <script src="~/admin/assets/js/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            min-height: 100vh !important;
+            background-image: url('/admin/assets/media/auth/bg4.jpg');
+            background-size: cover;
+            height: 100vh !important;
+        }
+
+        [data-bs-theme="dark"] body {
+            background-image: url('/metronic8/demo1/assets/media/auth/bg4-dark.jpg');
+        }
+
+        .swal2-popup .swal2-html-container, .swal2-popup .swal2-content {
+            margin-top: 0px;
+        }
+
+        .logo {
+            width: 420px;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="">
+    <div class="d-flex flex-column flex-root" id="kt_app_root">
+        <!--begin::Authentication - Sign-in -->
+        <div class="d-flex flex-column flex-column-fluid flex-lg-row">
+            <!--begin::Aside-->
+            <div class="d-flex flex-center w-lg-50 pt-15 pt-lg-0 px-10">
+                <!--begin::Aside-->
+                <div class="d-flex flex-center flex-lg-start flex-column">
+                    <!--begin::Logo-->
+                    <a class="mb-7">
+                         <img src="~/admin/assets/dionBranch/dion-logo ww.png" class="logo" />
+                    </a>
+                    <!--end::Logo-->
+                    <!--begin::Title-->
+                    @*<h2 class="text-white fw-normal m-0">
+                    Dion Elearning - Lớp học toàn cầu cho một thời đại toàn cầu
+                    </h2>*@
+                    <!--end::Title-->
+                </div>
+                <!--begin::Aside-->
+            </div>
+            <!--begin::Aside-->
+            <!--begin::Body-->
+            <div class="d-flex flex-center w-lg-50 p-10">
+                <!--begin::Card-->
+                <div class="card rounded-3 w-md-550px">
+                    <div class="card-body d-flex flex-column p-10 p-lg-20 pb-lg-10">
+                        <!--begin::Wrapper-->
+                        <div class="d-flex flex-center flex-column flex-column-fluid px-lg-10 pb-15 pb-lg-20">
+                            <!--begin::Form-->
+                            <form class="w-100 " id="loginForm">
+                                <!--begin::Heading-->
+                                <div class="text-center mb-11">
+                                    <!--begin::Title-->
+                                    <h1 class="text-dark fw-bolder mb-3">
+                                        Đăng nhập
+                                    </h1>
+                                </div>
+                                <div class="fv-row mb-8">
+                                    <div class="login-content">
+                                        <input type="text" id="username" class="form-control bg-transparent none-space" placeholder="Tài khoản">
+                                    </div>
+                                </div>
+                                <div class="position-relative d-flex align-items-center input-group-pass mb-8">
+                                    <span type="button" class="svg-icon svg-icon-1 fs-3 position-absolute me-5 end-0 btn_show_pass" data-target="#password">
+                                        <i class="ki-duotone ki-eye fs-3">
+                                            <span class="path1 ki-uniEC0B"></span>
+                                            <span class="path2 ki-uniEC0B"></span>
+                                            <span class="path3 ki-uniEC0D"></span>
+                                        </i>
+                                    </span>
+                                    <input type="password" id="password" class="form-control pe-3  mb-3 mb-lg-0 none-space" placeholder="Mật khẩu">
+                                </div>
+                                @*<div class="d-flex flex-end flex-wrap gap-3 fs-base fw-semibold mb-8">
+                                <a href="@Url.Action("ForgotPasswordAdmin","Home")" id="forgot-password" class="text"> Quên mật khẩu?</a>
+                                </div>*@
+                                <div class="d-grid mb-10">
+                                    <button id="btnLogin" type="button" class="btn btn-primary">
+                                        <span class="indicator-label">
+                                            Đăng nhập
+                                        </span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/admin/assets/plugins/global/plugins.bundle.js"></script>
+    <script src="/admin/assets/js/scripts.bundle.js"></script>
+    <script type="text/javascript">
+        const httpService = new HttpService();
+
+        $("#loginForm").on("submit", function (e) {
+            e.preventDefault();
+            validationSignIn();
+        });
+
+        $(document).ready(function () {
+            localStorage.removeItem("token");
+        })
+
+        function validationSignIn() {
+            let errors = [];
+            let swalSubTitle = "<p class='swal__admin__subtitle'>Đăng nhập không thành công!</p>";
+            if ($("#username").val().length == 0) {
+                errors.push("Tên đăng nhập không được để trống");
+            }
+
+            if ($("#password").val().length == 0) {
+                errors.push("Mật khẩu không được để trống");
+            }
+
+            if (errors.length > 0) {
+                let contentError = "<ul>";
+                errors.forEach(function (item, index) {
+                    contentError += "<li class='text-start'>" + item + "</li>";
+                })
+                contentError += "</ul>";
+                Swal.fire({
+                    title: swalSubTitle,
+                    html: contentError,
+                    icon: 'warning'
+                })
+            }
+            else {
+                signIn();
+
+            }
+        }
+
+        async function signIn() {
+            let swalSubTitle = "<p class='swal__admin__subtitle'>Đăng nhập không thành công!</p>";
+            try {
+                let data = {
+                    'username': $("#username").val(),
+                    "password": $("#password").val()
+                };
+
+                let result = await httpService.postAsync("@Url.Action("login","account")", data);
+                if (result.resources) {
+                    window.localStorage.setItem("currentUser", JSON.stringify(result.resources));
+                    window.localStorage.setItem("token", result.resources.token);
+                    Swal.fire("Đăng nhập thành công", "Chào mừng <b>" + result.resources.fullName + "</b> trở lại.", "success").then(function () {
+                        location.href = "/orders/admin/list"
+                    });
+                }
+                else if (result.status == "201" && result.message == "BLOCKEDACCOUNT") {
+                    Swal.fire(
+                        swalSubTitle,
+                        "Tài khoản của bạn đã bị khóa",
+                        "warning");
+                }
+                else if (result.status == "202" && result.message == "WRONGACCOUNT") {
+                    Swal.fire(
+                        swalSubTitle,
+                        "Tên đăng nhập hoặc mật khẩu không đúng.",
+                        "error");
+                }
+                
+            } catch (e) {
+                Swal.fire(
+                    swalSubTitle,
+                    "Đã có lỗi xảy ra xin vui lòng thử lại sau!",
+                    "error");
+                console.error(e);
+            }
+        }
+
+        $("#btnLogin").on("click", function (e) {
+            e.preventDefault();
+            validationSignIn()
+        })
+
+        $("#loginForm").on("input change keypress keydown", "input", function (e) {
+            let text = $(this).val().trim();
+            $(this).val(text);
+            if (e.which == 13) {
+                e.preventDefault();
+                validationSignIn()
+            }
+        })
+        $(".none-space").on("change input blur", function () {
+            let e = $(this);
+            let text = e.val().trim();
+            e.val(text);
+        })
+        $(".btn_show_pass").on("click", function (e) {
+            var target = $($(this).attr("data-target"));
+            if (target.attr("type") == "password") {
+                target.attr("type", "text");
+                $(this).html(`<i class="ki-duotone ki-eye-slash fs-3">
+                                                                    <span class="path1 ki-uniEC07"></span>
+                                                                    <span class="path2 ki-uniEC08"></span>
+                                                                    <span class="path3 ki-uniEC09"></span>
+                                                                    <span class="path4 ki-uniEC0A"></span>
+                                                                </i>`);
+            }
+            else {
+                target.attr("type", "password");
+                $(this).html(`<i class="ki-duotone ki-eye fs-3">
+                                                                    <span class="path1 ki-uniEC0B"></span>
+                                                                    <span class="path2 ki-uniEC0B"></span>
+                                                                    <span class="path3 ki-uniEC0D"></span>
+                                                                </i>`);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1905 @@
+@using QLBH_Dion.Constants;
+@{
+    Layout = "_Admin_Layout";
+    ViewBag.CurrentPage = "orders";
+}
+<style>
+    @@media screen and (max-width: 768px) {
+        .label-total-status {
+            width: 100% !important;
+        }
+        #btn-exportexcel {
+            display: none !important;
+        }
+        .class-export {
+            font-size: 12px;
+        }
+    }
+    .justify-content-right {
+        justify-content: right !important;
+    }
+
+    .table-content {
+        padding: 15px;
+        background: var(--bs-app-header-base-bg-color);
+        border-radius: 8px;
+    }
+
+    #tableData tbody td {
+        white-space: nowrap;
+    }
+
+    .detail-left {
+        border: 1px solid #d7d2d2f4;
+        border-left: none;
+        border-top: none;
+        border-bottom: none;
+        margin-top: 20px;
+    }
+
+    .product-name-css {
+        width: 110px;
+        height: 40px;
+        justify-content: center;
+        border: 2px solid black;
+        color: black;
+        background-color: #fff;
+        font-size: 16px !important;
+    }
+
+    .detail-right {
+        margin-top: 20px;
+        margin-left: 15px;
+        height: 261px;
+    }
+
+    .class-export {
+        display: flex;
+        gap: 5px;
+    }
+
+    #tableData tbody tr td:nth-child(7),
+    #tableData thead:nth-child(1) th:nth-child(7) {
+        text-align: left;
+    }
+
+    #tableData tbody tr td:nth-child(5),
+    #tableData tbody tr td:nth-child(6),
+    #tableData thead:nth-child(1) th:nth-child(5),
+    #tableData thead:nth-child(1) th:nth-child(6),
+    #tableData thead:nth-child(1) th:nth-child(9),
+    #tableData thead:nth-child(1) th:nth-child(10),
+    #tableData tbody tr td:nth-child(1),
+    #tableData thead tr th:nth-child(1),
+    #tableData tbody tr td:nth-child(2),
+    #tableData thead tr th:nth-child(2) {
+        text-align: center;
+    }
+
+    #tableData tbody tr td:nth-child(4),
+    #tableData thead tr th:nth-child(4) {
+        text-align: right;
+    }
+
+    #tableData thead:nth-child(2) tr th:nth-child(4) {
+        min-width: 170px !important;
+    }
+
+
+    #tableData tbody tr td:nth-child(3) span {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    #tableAccountBuy thead th,
+    #tableAccountBuy tbody td {
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .detail-right div {
+        height: 87px;
+        margin-bottom: 0px;
+    }
+
+    .input-readonly {
+        background-color: #f4f4f4f4;
+    }
+
+    .column-operation {
+        justify-content: center;
+        align-items: center;
+    }
+
+    h4 {
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    .svg-icon.svg-icon-1 svg {
+        height: 2rem !important;
+        width: 2rem !important;
+    }
+
+    .label-color {
+        padding-top: 0.3rem !important;
+        padding-bottom: 0.3rem !important;
+    }
+
+    table thead tr th {
+        white-space: nowrap;
+    }
+
+    .label-total-status {
+        width: 20%;
+    }
+
+    .show-history {
+        margin-left: 55%;
+    }
+
+    .modal-show-history {
+        width: 400px;
+    }
+
+    .title-history {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .item-change, .tab-content-history {
+        background-color: #f4f4f4f4;
+    }
+
+    #kt_menu_notifications {
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 1px 1px 8px 1px #c7e0ee;
+    }
+</style>
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+    <!--begin::Toolbar container-->
+    <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+        <!--begin::Page title-->
+        <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+            <!--begin::Title-->
+            <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Danh sách yêu cầu</h1>
+            <!--end::Title-->
+            <!--begin::Breadcrumb-->
+            <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                <!--begin::Item-->
+                <li class="breadcrumb-item text-muted">
+                    <a class="text-muted text-hover-primary">Trang chủ</a>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item">
+                    <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item text-muted">Quản lý yêu cầu</li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item">
+                    <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item text-muted">Danh sách yêu cầu</li>
+                <!--end::Item-->
+            </ul>
+            <!--end::Breadcrumb-->
+        </div>
+        <!--end::Page title-->
+    </div>
+    <!--end::Toolbar container-->
+</div>
+<div id="kt_app_content" class="app-content  flex-column-fluid ">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container  container-fluid ">
+        <!--begin::Row-->
+        <div class="row mt-8">
+            <div class="label-total-status" id="total-orderstatus-noprocess">
+
+                <!--begin::Statistics Widget 5-->
+                <div href="" class="card bg-warning hoverable card-xl-stretch mb-5 mb-xl-8 card-responsive cursor-pointer" onclick="searchOrderStatus(@OrderStatusId.NOPROCESS)">
+                    <!--begin::Body-->
+                    <div class="card-body">
+                        <i class="ki-duotone ki-brifecase-timer fs-2x text-white">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+
+                        <div class="text-white fw-bold fs-2 mb-2 mt-5" data-kt-countup="true" data-kt-countup-start-val="0" data-kt-countup-duration="4s" data-kt-countup-value="0" data-kt-initialized="1" id="total-noprocess"></div>
+
+                        <div class="fw-semibold text-white">
+                            Số biển chờ duyệt
+                        </div>
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Statistics Widget 5-->
+            </div>
+
+            <div class="label-total-status" id="total-orderstatus-approved">
+                <!--/orders/admin/listv1-->
+                <!--begin::Statistics Widget 5-->
+                <div href="" class="card bg-primary hoverable card-xl-stretch mb-5 mb-xl-8 card-responsive cursor-pointer" onclick="searchOrderStatus(@OrderStatusId.APPROVED)">
+                    <!--begin::Body-->
+                    <div class="card-body">
+                        <i class="ki-duotone ki-cheque text-white fs-2x ms-n1">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.3" d="M20 18H4C3.4 18 3 17.6 3 17V7C3 6.4 3.4 6 4 6H20C20.6 6 21 6.4 21 7V17C21 17.6 20.6 18 20 18ZM12 8C10.3 8 9 9.8 9 12C9 14.2 10.3 16 12 16C13.7 16 15 14.2 15 12C15 9.8 13.7 8 12 8Z" fill="currentColor"></path>
+                                <path d="M18 6H20C20.6 6 21 6.4 21 7V9C19.3 9 18 7.7 18 6ZM6 6H4C3.4 6 3 6.4 3 7V9C4.7 9 6 7.7 6 6ZM21 17V15C19.3 15 18 16.3 18 18H20C20.6 18 21 17.6 21 17ZM3 15V17C3 17.6 3.4 18 4 18H6C6 16.3 4.7 15 3 15Z" fill="currentColor"></path>
+                            </svg>
+                        </i>
+
+                        <div class="text-white fw-bold fs-2 mb-2 mt-5 counted" data-kt-countup="true" data-kt-countup-start-val="0" data-kt-countup-duration="4s" data-kt-countup-value="0" data-kt-initialized="1" id="total-approved"></div>
+
+                        <div class="fw-semibold text-white">
+                            Số biển đã được duyệt
+                        </div>
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Statistics Widget 5-->
+            </div>
+
+            <div class="label-total-status" id="total-orderstatus-deposited">
+                <!--begin::Statistics Widget 5-->
+                <div href="" class="card bg-info hoverable card-xl-stretch mb-5 mb-xl-8  card-responsive cursor-pointer" style="height:153.67px;" onclick="searchOrderStatus(@OrderStatusId.DEPOSITED)">
+                    <!--begin::Body-->
+                    <div class="card-body">
+                        <i class="ki-duotone ki-abstract-39 text-white fs-2x ms-n1">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <div class="text-white fw-bold fs-2 mb-2 mt-5 counted" data-kt-countup="true" data-kt-countup-start-val="0" data-kt-countup-duration="4s" data-kt-countup-value="" data-kt-initialized="1" id="total-deposited"></div>
+
+                        <div class="fw-semibold text-white">
+                            Số biển đã cọc
+                        </div>
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Statistics Widget 5-->
+            </div>
+
+            <div class="label-total-status" id="total-orderstatus-purchaed">
+
+                <!--begin::Statistics Widget 5-->
+                <div href="" class="card bg-success hoverable card-xl-stretch  mb-5 mb-xl-8  card-responsive cursor-pointer" style="height:153.67px;" onclick="searchOrderStatus(@OrderStatusId.PURCHAED)">
+                    <!--begin::Body-->
+                    <div class="card-body">
+                        <i class="ki-duotone ki-chart-pie-simple text-white fs-2x ms-n1">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px" viewBox="0 0 24 24" version="1.1">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <rect x="0" y="0" width="24" height="24"></rect>
+                                    <path d="M6,2 L18,2 C19.6568542,2 21,3.34314575 21,5 L21,19 C21,20.6568542 19.6568542,22 18,22 L6,22 C4.34314575,22 3,20.6568542 3,19 L3,5 C3,3.34314575 4.34314575,2 6,2 Z M12,11 C13.1045695,11 14,10.1045695 14,9 C14,7.8954305 13.1045695,7 12,7 C10.8954305,7 10,7.8954305 10,9 C10,10.1045695 10.8954305,11 12,11 Z M7.00036205,16.4995035 C6.98863236,16.6619875 7.26484009,17 7.4041679,17 C11.463736,17 14.5228466,17 16.5815,17 C16.9988413,17 17.0053266,16.6221713 16.9988413,16.5 C16.8360465,13.4332455 14.6506758,12 11.9907452,12 C9.36772908,12 7.21569918,13.5165724 7.00036205,16.4995035 Z" fill="white"></path>
+                                </g>
+                            </svg>
+                        </i>
+
+                        <div class="text-white fw-bold fs-2 mb-2 mt-5 counted" data-kt-countup="true" data-kt-countup-start-val="0" data-kt-countup-duration="4s" data-kt-countup-value="0" data-kt-initialized="1" id="total-purchaed"></div>
+
+                        <div class="fw-semibold text-white">
+                            Số biển đã mua
+                        </div>
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Statistics Widget 5-->
+            </div>
+
+            <div class="label-total-status" id="total-orderstatus-cacel">
+                <!--begin::Statistics Widget 5-->
+                <div href="" class="card bg-danger hoverable card-xl-stretch mb-5 mb-xl-8  card-responsive cursor-pointer" style="height:153.67px;" onclick="searchOrderStatus(@OrderStatusId.CANCEL)">
+                    <!--begin::Body-->
+                    <div class="card-body">
+                        <i class="ki-duotone ki-briefcase text-white fs-2x ms-n1">
+                            <svg width="25" height="28" viewBox="0 0 25 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M24.0259 11.4401H1.97259C1.69436 11.4505 1.43123 11.5693 1.2394 11.7711C1.04757 11.9729 0.942247 12.2417 0.945922 12.5201V20.0801C0.933592 21.0248 1.10836 21.9627 1.46016 22.8395C1.81196 23.7164 2.33382 24.515 2.99568 25.1892C3.65754 25.8635 4.4463 26.4001 5.3165 26.7681C6.1867 27.1361 7.12112 27.3282 8.06592 27.3334H17.9993C19.8855 27.288 21.6778 26.5012 22.988 25.1436C24.2983 23.7859 25.0208 21.9667 24.9993 20.0801V12.5201C25.0037 12.2504 24.9057 11.989 24.7251 11.7886C24.5445 11.5882 24.2947 11.4637 24.0259 11.4401ZM8.73259 21.8401C8.51017 21.84 8.29271 21.7744 8.1073 21.6515C7.92189 21.5287 7.77672 21.354 7.68989 21.1492C7.60306 20.9444 7.5784 20.7186 7.61899 20.5C7.65957 20.2813 7.76361 20.0794 7.91813 19.9194C8.07266 19.7594 8.27084 19.6484 8.48798 19.6003C8.70513 19.5522 8.93164 19.569 9.1393 19.6487C9.34695 19.7283 9.52658 19.8673 9.65578 20.0484C9.78499 20.2294 9.85807 20.4445 9.86592 20.6668C9.86241 20.965 9.74146 21.2499 9.5293 21.4595C9.31714 21.6692 9.03087 21.7868 8.73259 21.7868V21.8401ZM8.73259 17.5868C8.50844 17.5868 8.28932 17.5203 8.10294 17.3958C7.91657 17.2712 7.77131 17.0942 7.68553 16.8871C7.59975 16.6801 7.5773 16.4522 7.62103 16.2323C7.66476 16.0125 7.7727 15.8105 7.9312 15.652C8.0897 15.4935 8.29164 15.3856 8.51149 15.3419C8.73133 15.2981 8.95921 15.3206 9.1663 15.4064C9.37339 15.4921 9.55039 15.6374 9.67492 15.8238C9.79945 16.0102 9.86592 16.2293 9.86592 16.4534C9.86771 16.6028 9.83962 16.7509 9.7833 16.8892C9.72697 17.0276 9.64356 17.1532 9.53796 17.2588C9.43236 17.3644 9.30672 17.4478 9.1684 17.5041C9.03009 17.5605 8.88192 17.5886 8.73259 17.5868ZM12.9993 21.8401C12.701 21.8331 12.4175 21.7088 12.2104 21.4941C12.0032 21.2794 11.889 20.9917 11.8926 20.6934C11.8926 20.3964 12.0106 20.1115 12.2206 19.9015C12.4307 19.6914 12.7155 19.5734 13.0126 19.5734C13.3096 19.5734 13.5945 19.6914 13.8045 19.9015C14.0146 20.1115 14.1326 20.3964 14.1326 20.6934C14.1291 20.9917 14.0081 21.2765 13.796 21.4862C13.5838 21.6959 13.2975 21.8135 12.9993 21.8134V21.8401ZM12.9993 17.5868C12.701 17.5798 12.4175 17.4555 12.2104 17.2408C12.0032 17.0261 11.889 16.7384 11.8926 16.4401C11.8926 16.1431 12.0106 15.8582 12.2206 15.6481C12.4307 15.4381 12.7155 15.3201 13.0126 15.3201C13.3096 15.3201 13.5945 15.4381 13.8045 15.6481C14.0146 15.8582 14.1326 16.1431 14.1326 16.4401C14.1326 16.7384 14.015 17.0246 13.8054 17.2368C13.5957 17.449 13.3109 17.5699 13.0126 17.5734L12.9993 17.5868ZM17.2393 21.8401C16.9387 21.8401 16.6504 21.7207 16.4379 21.5082C16.2253 21.2956 16.1059 21.0073 16.1059 20.7068C16.1059 20.4062 16.2253 20.1179 16.4379 19.9054C16.6504 19.6928 16.9387 19.5734 17.2393 19.5734C17.5398 19.5734 17.8281 19.6928 18.0406 19.9054C18.2532 20.1179 18.3726 20.4062 18.3726 20.7068C18.3726 21.0073 18.2532 21.2956 18.0406 21.5082C17.8281 21.7207 17.5398 21.8401 17.2393 21.8401ZM17.2393 17.5868C16.9387 17.5868 16.6504 17.4674 16.4379 17.2548C16.2253 17.0423 16.1059 16.754 16.1059 16.4534C16.1059 16.1529 16.2253 15.8646 16.4379 15.652C16.6504 15.4395 16.9387 15.3201 17.2393 15.3201C17.5398 15.3201 17.8281 15.4395 18.0406 15.652C18.2532 15.8646 18.3726 16.1529 18.3726 16.4534C18.3726 16.754 18.2532 17.0423 18.0406 17.2548C17.8281 17.4674 17.5398 17.5868 17.2393 17.5868ZM24.6393 8.13343C24.7349 8.40774 24.7203 8.7085 24.5984 8.9722C24.4765 9.2359 24.2569 9.44192 23.9859 9.54677C23.8703 9.58813 23.7487 9.61063 23.6259 9.61343H2.62592C2.2723 9.61343 1.93316 9.47296 1.68311 9.22291C1.43306 8.97286 1.29259 8.63372 1.29259 8.2801C1.28883 8.11525 1.32066 7.95153 1.38592 7.8001C1.77683 6.84295 2.37003 5.98161 3.12487 5.27509C3.87972 4.56858 4.77837 4.03358 5.75926 3.70677V1.62677C5.75926 1.3863 5.85478 1.15569 6.02481 0.985655C6.19485 0.815622 6.42546 0.720099 6.66592 0.720099C6.90639 0.720099 7.137 0.815622 7.30703 0.985655C7.47707 1.15569 7.57259 1.3863 7.57259 1.62677V3.33343H12.3059V1.62677C12.2904 1.49938 12.3021 1.37015 12.3402 1.24761C12.3783 1.12508 12.442 1.01204 12.5271 0.915961C12.6122 0.819883 12.7167 0.74296 12.8337 0.690277C12.9507 0.637594 13.0776 0.610352 13.2059 0.610352C13.3343 0.610352 13.4611 0.637594 13.5781 0.690277C13.6952 0.74296 13.7997 0.819883 13.8847 0.915961C13.9698 1.01204 14.0335 1.12508 14.0716 1.24761C14.1098 1.37015 14.1215 1.49938 14.1059 1.62677V3.33343H18.3326V1.62677C18.3171 1.49938 18.3287 1.37015 18.3669 1.24761C18.405 1.12508 18.4687 1.01204 18.5538 0.915961C18.6389 0.819883 18.7434 0.74296 18.8604 0.690277C18.9774 0.637594 19.1043 0.610352 19.2326 0.610352C19.3609 0.610352 19.4878 0.637594 19.6048 0.690277C19.7218 0.74296 19.8263 0.819883 19.9114 0.915961C19.9965 1.01204 20.0602 1.12508 20.0983 1.24761C20.1364 1.37015 20.1481 1.49938 20.1326 1.62677V3.70677C21.1713 4.05261 22.1173 4.63121 22.8984 5.39839C23.6794 6.16557 24.2749 7.10105 24.6393 8.13343Z" fill="currentColor"></path>
+                            </svg>
+                        </i>
+
+                        <div class="text-white fw-bold fs-2 mb-2 mt-5 counted" data-kt-countup="true" data-kt-countup-start-val="0" data-kt-countup-duration="4s" data-kt-countup-value="" data-kt-initialized="1" id="total-cancel"></div>
+
+                        <div class="fw-semibold text-white">
+                            Số biển đã hủy
+                        </div>
+                    </div>
+                    <!--end::Body-->
+                </div>
+                <!--end::Statistics Widget 5-->
+            </div>
+        </div>
+        <div class="table-content">
+            <!--begin::Col-->
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-stack mb-5">
+                <!--begin::Search-->
+                <div class="d-flex align-items-center position-relative my-1" @* style="visibility: hidden;" *@>
+                    <i class="ki-duotone ki-magnifier fs-1 position-absolute ms-6"><span class="path1"></span><span class="path2"></span></i>
+                    <input type="search" data-kt-docs-table-filter="search" class="form-control form-control-solid w-250px ps-15" id="search-input" placeholder="Tìm kiếm" />
+                </div>
+                <!--end::Search-->
+                <!--begin::Toolbar-->
+                <div class="d-flex justify-content-end" data-kt-docs-table-toolbar="base" id="btn-exportexcel">
+                    <button type="button" class="btn btn-primary" id="btn-export-excel">
+                        <div class="indicator-label class-export">
+                            <i class="ki-duotone ki-folder-down fs-2" >
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            Xuất file excel
+                        </div>
+                        <div class="indicator-progress class-load">
+                            <i class="ki-duotone ki-folder-down fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            Đang tải... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </div>
+                    </button>
+                </div>
+                <!--end::Toolbar-->
+                <!--begin::Group actions-->
+                <div class="d-flex justify-content-end align-items-center d-none" data-kt-docs-table-toolbar="selected">
+                    <div class="fw-bold me-5">
+                        <span class="me-2" data-kt-docs-table-select="selected_count"></span> Selected
+                    </div>
+
+                    <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" title="Coming Soon">
+                        Selection Action
+                    </button>
+                </div>
+                <!--end::Group actions-->
+            </div>
+            <!--end::Wrapper-->
+            <!--begin::Datatable-->
+            <div class="table-responsive">
+                <table id="tableData" class="table table-hover table-rounded table-row-bordered gy-3 gs-3">
+                    <thead>
+                        <tr class="fw-bold fs-6 text-gray-800">
+                            <th>STT</th>
+                            <th>Mã</th>
+                            <th>Biển số</th>
+                            <th>Giá trần</th>
+                            <!--<th>Tài khoản đấu</th>-->
+                            <th>Thời gian kết thúc đăng ký</th>
+                            <th>Thời gian đấu giá</th>
+                            <th>Người yêu cầu</th>
+                            <th>Trạng thái yêu cầu</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <thead>
+                        <tr class="fs-6">
+                            <th></th>
+                            <th><input type="text" class="form-control tableheaderFillter" id="fillter-order-id" /></th>
+                            <th><input type="text" class="form-control tableheaderFillter" id="fillter-order-product-name" /></th>
+
+                            <th>
+                                <select class="form-select select2-hidden-accessible tableheaderFillter" id="select-money" data-control="select2" data-placeholder="" data-allow-clear="true">
+                                    <option></option>
+                                    <option value="1000000-100000000">1 - 100 triệu</option>
+                                    <option value="100000000-500000000">100 - 500 triệu</option>
+                                    <option value="500000000-1000000000">500 triệu - 1 tỷ</option>
+                                    <option value="1000000000-vocung"> Lớn hơn 1 tỷ</option>
+                                </select>
+                            </th>
+                            @* <th></th> *@
+                            <th class="column-date">
+                                <div class="input-group" id="register-date" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                    <input id="register-date-value" readonly type="text" class="form-control tableheaderFillter" data-td-target="#register-date" />
+                                    <span class="input-group-text" title="Chọn" id="open-register-date" data-td-target="#register-date">
+                                        <i class="ki-duotone ki-calendar fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                </div>
+                            </th>
+                            <th class="column-date">
+                                <div class="input-group" id="auction-date" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                    <input id="auction-date-value" readonly type="text" class="form-control tableheaderFillter" data-td-target="#auction-date" />
+                                    <span class="input-group-text" title="Chọn" id="open-auction-date" data-td-target="#auction-date">
+                                        <i class="ki-duotone ki-calendar fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                </div>
+                            </th>
+                            <th><input type="text" class="form-control tableheaderFillter" id="fillter-account-name" /></th>
+                            <th>
+                                <select class="form-select select2-hidden-accessible tableheaderFillter" id="orderStatus" data-control="select2" data-placeholder="" data-allow-clear="true" multiple>
+                                </select>
+                            </th>
+                            <th>
+                                <div class="input-group" id="created-time" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                    <input id="created-time-value" readonly type="text" class="form-control tableheaderFillter" data-td-target="#created-time" />
+                                    <span class="input-group-text" title="Chọn" id="open-created-time" data-td-target="#created-time">
+                                        <i class="ki-duotone ki-calendar fs-2"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                </div>
+                            </th>
+                            <th class="text-center">
+                                <div class="search-control d-flex flex-row" style="gap:5px;">
+                                    <div>
+                                        <button class="btn btn-primary form-control" title="Tìm kiếm" id="btnTableSearch">
+                                            <span class="svg-icon svg-icon svg-icon-1 svg_search_2 m-0">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M21.7 18.9L18.6 15.8C17.9 16.9 16.9 17.9 15.8 18.6L18.9 21.7C19.3 22.1 19.9 22.1 20.3 21.7L21.7 20.3C22.1 19.9 22.1 19.3 21.7 18.9Z" fill="currentColor"></path>
+                                                    <path opacity="0.3" d="M11 20C6 20 2 16 2 11C2 6 6 2 11 2C16 2 20 6 20 11C20 16 16 20 11 20ZM11 4C7.1 4 4 7.1 4 11C4 14.9 7.1 18 11 18C14.9 18 18 14.9 18 11C18 7.1 14.9 4 11 4ZM8 11C8 9.3 9.3 8 11 8C11.6 8 12 7.6 12 7C12 6.4 11.6 6 11 6C8.2 6 6 8.2 6 11C6 11.6 6.4 12 7 12C7.6 12 8 11.6 8 11Z" fill="currentColor"></path>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </div>
+                                    @* style="height: 43.56px;" *@
+                                    <div>
+                                        <button class="btn btn-secondary form-control" title="Reset" id="btnTableResetSearch">
+                                            <span class="svg-icon svg-icon svg-icon-1 svg_cancel m-0">
+                                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect x="9.39844" y="20.7144" width="16" height="2.66667" rx="1.33333" transform="rotate(-45 9.39844 20.7144)" fill="currentColor"></rect>
+                                                    <rect x="11.2852" y="9.40039" width="16" height="2.66667" rx="1.33333" transform="rotate(45 11.2852 9.40039)" fill="currentColor"></rect>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                        <tr class="border-top fw-bold fs-6 text-gray-800">
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!--end::Datatable-->
+            <div class="modal fade" id="modal-id">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="title-modal"></h3>
+                            @if (ViewBag.RoleId == RoleId.ADMIN)
+                            {
+                                <div class="show-history">
+                                    <div class="w-150px h-35px d-flex justify-content-center align-items-center rounded-2 bg-primary text-white cursor-pointer" data-kt-menu-trigger="{default: 'click'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" id="kt_menu_item_wow" onclick="showHistory()">
+                                        Lịch sử chỉnh sửa
+                                    </div>
+
+                                    <div class="menu menu-sub menu-sub-dropdown menu-column w-350px w-lg-375px mt-2" data-kt-menu="true" id="kt_menu_notifications">
+                                        <div class="h-50px d-flex justify-content-center align-items-center fs-5 title-history text-black" style="background-color:#e2dfdff4">
+                                            <b>Lịch sử cập nhật</b>
+                                        </div>
+                                        <div class="tab-content-history h-350px ps-7 overflow-auto d-flex flex-column gap-7 pb-5 pt-5" id="tab-content-history">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                            <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <form action="#">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Thông tin biển số</h4>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Thông tin chi tiết yêu cầu</h4>
+                                    </div>
+                                    <div class="col-sm-6 row detail-left">
+                                        <div class="form-group col-sm-6 d-none">
+                                            <div class="mb-5">
+                                                <label class="form-label">Mã</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-product-id" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Biển số</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-product-name" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Tỉnh thành phố</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-product-province" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Loại xe</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-product-brand" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Loại biển</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-product-category" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Thời gian bắt đầu đăng ký</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-registerOpenTime" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Thời gian kết thúc đăng ký</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-registerClosedTime" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Thời gian đấu giá</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-auctionTime" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 row detail-right">
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Giá trần</label>
+                                                <input type="text" autocomplete="off" class="form-control" id="orders-price" placeholder="" aria-label="id" aria-describedby="basic-addon-id" data-type="currency" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label required">Giá cuối</label>
+                                                <input type="text" autocomplete="off" class="form-control" id="orders-final-price" placeholder="" aria-label="id" aria-describedby="basic-addon-id" data-type="currency" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Người yêu cầu</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-accountName" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Ngày tạo</label>
+                                                <input readonly type="text" autocomplete="off" class="form-control input-readonly" id="orders-createdTime" placeholder="" aria-label="id" aria-describedby="basic-addon-id" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label required">Trạng thái yêu cầu</label>
+                                                <select class="form-select dataSelect" id="orders-orderStatus" data-control="select2" data-dropdown-parent="#modal-id" name="select-orderstatus"></select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <div class="mb-5">
+                                                <label class="form-label">Ghi chú</label>
+                                                <textarea rows="5" type="text" autocomplete="off" class="form-control input-id" id="orders-product-note" placeholder="" aria-label="id" aria-describedby="basic-addon-id"></textarea>
+                                            </div>
+                                        </div>
+
+
+
+
+                                    </div>
+
+                                </div>
+                            </form>
+                            <div class="" id="list-account-auction">
+                                <h3 class="modal-title" id="list-account-title"></h3>
+                                <div class="table-content">
+                                    <!--begin::Col-->
+                                    <!--begin::Wrapper-->
+                                    <div class="d-flex flex-stack mb-5">
+                                        <!--begin::Search-->
+                                        <div class="d-flex align-items-center position-relative my-1">
+                                            <i class="ki-duotone ki-magnifier fs-1 position-absolute ms-6"><span class="path1"></span><span class="path2"></span></i>
+                                            <input type="search" data-kt-docs-table-filter="search" class="form-control form-control-solid w-250px ps-15" id="search-account-buy" placeholder="Tìm kiếm" />
+                                        </div>
+                                        <!--end::Search-->
+                                        <!--begin::Toolbar-->
+                                        <div class="d-flex justify-content-end" data-kt-docs-table-toolbar="base" id="role-show-add">
+                                            <!--end::Filter-->
+                                            <!--begin::Add customer-->
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" title="" onclick="editItemAccount(0)" data-target="#modal-kpi">
+                                                <i class="ki-duotone ki-plus fs-2"></i>
+                                                Thêm mới
+                                            </button>
+                                            <!--end::Add customer-->
+                                        </div>
+                                        <!--end::Toolbar-->
+                                        <!--begin::Group actions-->
+                                        <div class="d-flex justify-content-end align-items-center d-none" data-kt-docs-table-toolbar="selected">
+                                            <div class="fw-bold me-5">
+                                                <span class="me-2" data-kt-docs-table-select="selected_count"></span> Selected
+                                            </div>
+
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" title="Coming Soon">
+                                                Selection Action
+                                            </button>
+                                        </div>
+                                        <!--end::Group actions-->
+                                    </div>
+
+                                    <div>
+                                        <div class="d-none row" id="show-add-username">
+                                            <div class="col-sm-3  hide-with-leader hide-when-admin-select">
+                                                <div class="form-group">
+                                                    <div class="mb-5">
+                                                        <label class="form-label">Chọn tài khoản theo tên đăng nhập</label>
+                                                        <select class="form-select dataSelect" id="add-username" data-control="select2" data-dropdown-parent="" data-allow-clear="true" multiple></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3  hide-with-leader hide-when-admin-select">
+                                                <div class="form-group">
+                                                    <div class="mb-5">
+                                                        <label class="form-label"></label>
+                                                        <button type="button" class="btn btn-primary mt-8" data-bs-toggle="tooltip" title="" onclick="addItemAccount()" data-target="">Thêm</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row d-none" id="edit-item-account-buy">
+                                            <div class="col-sm-3  hide-with-leader hide-when-admin-select">
+                                                <div class="form-group">
+                                                    <div class="mb-5">
+                                                        <label class="form-label">Mã vào phòng</label>
+                                                        <input type="text" autocomplete="off" class="form-control" id="code-room" placeholder="" aria-label="" aria-describedby="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3  hide-with-leader hide-when-admin-select">
+                                                <div class="form-group">
+                                                    <div class="mb-5">
+                                                        <label class="form-label">Trạng thái thanh toán</label>
+                                                        <select class="form-select dataSelect" id="payment-status" data-control="select2" data-dropdown-parent="#modal-id"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3  hide-with-leader hide-when-admin-select">
+                                                <div class="form-group">
+                                                    <div class="mb-5">
+                                                        <label class="form-label">Kết quả đấu giá</label>
+                                                        <select class="form-select dataSelect" id="result-auction" data-control="select2" data-dropdown-parent="#modal-id"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3  hide-with-leader hide-when-admin-select">
+                                                <div class="form-group">
+                                                    <div class="mb-5">
+                                                        <label class="form-label"></label>
+                                                        <button type="button" class="btn btn-primary mt-8" data-bs-toggle="tooltip" title="" onclick="updateItemAccount()" data-target="">Cập nhật</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table id="tableAccount" class="table table-hover table-rounded table-row-bordered gy-3 gs-3" style="width:100%">
+                                                <thead>
+                                                    <tr class="fw-bold fs-6 text-gray-800">
+                                                        <th>STT</th>
+                                                        <th>Tên đăng nhập</th>
+                                                        <th>Mật khẩu</th>
+                                                        <th>Mã vào phòng</th>
+                                                        <th>Trạng thái thanh toán</th>
+                                                        <th>Kết quả đấu giá</th>
+                                                        <th>Họ và tên</th>
+                                                        <th>Ngày tạo</th>
+                                                        @if (ViewBag.RoleId != RoleId.CONSUMER)
+                                                        {
+                                                            <th>Thao tác</th>
+                                                        }
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="border-top fw-bold fs-6 text-gray-800">
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-start">
+                                                <div id="info-account-buy"></div>
+                                            </div>
+                                            <div id="account-buy-paging" class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-end"></div>
+                                        </div>
+                                    </div>
+                                    <!--end::Datatable-->
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-bs-dismiss="modal">
+                                Đóng
+                            </button>
+                            <button type="button" class="btn btn-primary" id="btnUpdateItem">
+                                <span class="indicator-label">
+                                    Cập nhật
+                                </span>
+                                <span class="indicator-progress">
+                                    Đang tải... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Col-->
+            @* <div class="modal fade modal2" id="modal-history">
+            <div class="modal-dialog modal-dialog-scrollable modal-show-history">
+            <div class="modal-content">
+            <div class="modal-header">
+            <h3>Lịch sử chỉnh sửa</h3>
+            <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+            <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+            </div>
+            </div>
+            <div class="modal-body">
+            <div id="notification-change">
+            <div class="d-none" id="no-change">
+            <p>Không có thay đổi nào</p>
+            </div>
+            <div class="d-none" id="have-change">
+            </div>
+            </div>
+            </div>
+
+            </div>
+            </div>
+            </div> *@
+        </div>
+    </div>
+    <!--end::Content container-->
+</div>
+<!--begin:Base load data-->
+<script>
+    if (@ViewBag.RoleId == @RoleId.ACCOUNTANT) {
+        $("#total-orderstatus-noprocess").addClass('d-none');
+        $("#total-orderstatus-cacel").addClass('d-none');
+        //$("#total-orderstatus-purchaed").addClass('d-none');
+    }
+    if (@ViewBag.RoleId == @RoleId.PURCHASING_EMPLOYEE) {
+        $("#total-orderstatus-noprocess").addClass('d-none');
+        $("#total-orderstatus-cacel").addClass('d-none');
+    }
+    var showItem = ['id', 'auctionProductId', 'orderTypeId', 'orderStatusId', 'accountId', 'createdTime', 'search', 'note', 'note2', 'note3', 'note4', 'note5'];
+    var dataSource = [];
+    const VND = new Intl.NumberFormat('en-US', {
+        currency: 'USD',
+    });
+    var updatingItemId = 0;
+    var editObj;
+    var tableUpdating = 0;
+    var table;
+    var orderId;
+    var updateOrderAccount = {
+        id: 0,
+        description: "",
+        orderPaymentStatusId: 0,
+        orderAccountStatusId: 0
+    }
+    const submitButton = document.getElementById('btnUpdateItem');
+    submitButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        submitButton.setAttribute('data-kt-indicator', 'on');
+        // Disable button to avoid multiple click
+        submitButton.disabled = true;
+        // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+        if ($("#orders-final-price").val().length > 0) {
+            updateItem(updatingItemId);
+        }
+        else {
+            Swal.fire(
+                "Cảnh báo",
+                "Giá cuối không được để trống",
+                "warning"
+            );
+            submitButton.removeAttribute('data-kt-indicator');
+            // Enable button
+            submitButton.disabled = false;
+        }
+    });
+    const btnExportExcel = document.getElementById('btn-export-excel');
+    btnExportExcel.addEventListener('click', function (e) {
+        e.preventDefault();
+        btnExportExcel.setAttribute('data-kt-indicator', 'on');
+        // Disable button to avoid multiple click
+        btnExportExcel.disabled = true;
+        exportExcel();
+    });
+    $('#search-input').on("keypress", function (e) {
+        if (e.keyCode === 13) {
+            table.search($(this).val()).draw();
+        }
+    });
+    var accountBuyPaging = {
+        "id": 0,
+        "pageIndex": 1,
+        "pageSize": 5,
+        "searchAll": "",
+    };
+    $('#search-account-buy').on("keypress", function (e) {
+        if (e.keyCode === 13) {
+            accountBuyPaging.searchAll = $("#search-account-buy").val();
+            accountBuyPaging.id = orderId;
+            accountBuyPaging.pageIndex = 1;
+            loadAccountBuy();
+        }
+    });
+    $("#account-buy-paging").on("click", ".page-link", function (e) {
+        e.preventDefault();
+        if ($(this).parent().hasClass("active") || $(this).parent().hasClass("disabled") || $(this).text() == "...") {
+            return;
+        }
+        if ($(this).parent().hasClass("previous")) {
+            accountBuyPaging.pageIndex -= 1;
+        }
+        else if ($(this).parent().hasClass("next")) {
+            accountBuyPaging.pageIndex += 1;
+        }
+        else {
+            $("#account-buy-paging .page-item").removeClass("active");
+            $(this).addClass("active");
+            accountBuyPaging.pageIndex = parseInt($(this).text());
+        }
+        loadAccountBuy();
+    });
+    $(document).ready(function () {
+        // Load data
+        searchParamURL();
+        loadData();
+        loadOrderStatus();
+        loadOrderType();
+        loadTotalOrderStatus();
+        loadUsernameAccountBuy();
+
+        $("#account-buy-paging").on("click", ".page-link", function (e) {
+            e.preventDefault();
+            if ($(this).parent().hasClass("active") || $(this).parent().hasClass("disabled") || $(this).text() == "...") {
+                return;
+            }
+            if ($(this).parent().hasClass("previous")) {
+                accountBuyPaging.pageIndex -= 1;
+            }
+            else if ($(this).parent().hasClass("next")) {
+                accountBuyPaging.pageIndex += 1;
+            }
+            else {
+                $("#account-buy-paging .page-item").removeClass("active");
+                $(this).addClass("active");
+                accountBuyPaging.pageIndex = parseInt($(this).text());
+            }
+            loadAccountBuy();
+        });
+
+        // start register date
+        $("#register-date-value").flatpickr({
+            dateFormat: "d/m/Y",
+            mode: "range",
+        });
+        $("#open-register-date").click(function () {
+            $("#register-date-value").click();
+        });
+        // end register date
+
+        // start auction date
+        $("#auction-date-value").flatpickr({
+            dateFormat: "d/m/Y",
+            mode: "range",
+        });
+        $("#open-auction-date").click(function () {
+            $("#auction-date-value").click();
+        });
+        // end auction date
+
+        // start created time
+        $("#created-time-value").flatpickr({
+            dateFormat: "d/m/Y",
+            mode: "range",
+        });
+        $("#open-created-time").click(function () {
+            $("#created-time-value").click();
+        });
+        // end created time
+
+        $('.dataSelect').select2();
+
+
+        $("#btnTableSearch").click(function () {
+            tableSearch();
+        });
+
+        $("#tableData thead:nth-child(2) tr th input").keypress(function (e) {
+            let key = e.which;
+            if (key == 13) {
+                $("#btnTableSearch").click();
+            }
+        });
+        $("#btnTableResetSearch").click(function () {
+            $(".tableheaderFillter").val("").trigger("change");
+            tableSearch();
+        });
+    });
+    function loadData() {
+        initTable();
+    }
+    function initTable() {
+        table = $('#tableData').DataTable({
+            processing: true,
+            serverSide: true,
+            paging: true,
+            searching: { regex: true },
+            order: [8, 'desc'],
+            "oLanguage": {
+                "sUrl": "/js/Vietnamese.json"
+            },
+            ajax: {
+                url: systemURL + "orders/api/list-server-side",
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    if (localStorage.token) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token);
+                    }
+                },
+                data: function (d) {
+                    d.searchAll = $("#search-input").val();
+                    return JSON.stringify(d);
+                }
+            },
+            columns: [
+                {
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        var info = table.page.info();
+                        var stt = meta.row + 1 + info.page * info.length;
+                        return stt; // This contains the row index
+                    }
+                },
+                {
+                    data: "id",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-id' class='text-hover-primary fs-6' style='font-weight: 700;'>" + "#" + row.id + "</span>";
+                    },
+                },
+                {
+                    data: "productName",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-productName' class=' fw-bold text-hover-primary mb-1 fs-6 plate-name badge product-name-css' >" + row.productName + "</span>";
+                    },
+                },
+                {
+                    data: "price",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-price' class='text-gray-700 fw-bold text-hover-primary mb-1 fs-6 plate-name badge'>" + VND.format(row.price) + "</span>";
+                    },
+                },
+
+                {
+                    data: "registerClosedTime",
+                    render: function (data, type, row, meta) {
+                        //let displayRegisterOpenTime = moment(row.auctionProduct.registerOpenTime).format("DD/MM/YYYY HH:mm:ss");
+                        let displayRegisterClosedTime = moment(row.registerClosedTime).format("DD/MM/YYYY HH:mm:ss");
+                        return "<span id='row" + row.id + "-column-registerClosedTime' class='text-hover-primary text-gray-700 fs-6'>" + displayRegisterClosedTime + "</span>";
+                    },
+                },
+                {
+                    data: "closedTime",
+                    render: function (data, type, row, meta) {
+                        let displayOpenTime = moment(row.openTime).format("DD/MM/YYYY HH:mm").split(' ');
+                        let displayClosedTime = moment(row.closedTime).format("DD/MM/YYYY HH:mm").split(' ');
+                        return "<span id='row" + row.id + "-column-closedTime' class='text-hover-primary text-gray-700 fs-6'>" + displayOpenTime[0] + " " + displayOpenTime[1] + "-" + displayClosedTime[1] + "</span>";
+                    },
+                },
+
+
+                {
+                    data: "accountName",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-accountName' class='text-hover-primary text-gray-700 fs-6'>" + row.accountName + "</span>";
+                    },
+                },
+                {
+                    data: "orderStatusId",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-orderStatusId' class='badge py-3 px-4 fs-6' style='background-color:" + customBagdeColor(row.orderStatusColor) + "; color : " + row.orderStatusColor + "'>" + row.orderStatusName + "</span>";
+                    },
+                },
+                {
+                    data: "createdTime",
+                    render: function (data, type, row, meta) {
+                        var tempDate = new Date(data);
+                        var displayValue = moment(data).format("DD/MM/YYYY HH:mm:ss");
+                        return "<span id='row" + row.id + "-column-createdTime' class='text-hover-primary text-gray-700 fs-6'>" + displayValue + "</span>";
+                    }
+                },
+                {
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        return "<div class='d-flex justify-content-right gap-2'>"
+                            + (@ViewBag.RoleId != @RoleId.CONSUMER && @ViewBag.RoleId != @RoleId.PURCHASING_EMPLOYEE && @ViewBag.RoleId != @RoleId.ACCOUNTANT  && row.orderStatusId == @OrderStatusId.NOPROCESS  ? "<a title='Duyệt' onclick='updateStatus(" + row.id + "," + 1 + ")' class='me-2 btn_manage cursor-pointer'><i class='ki-duotone ki-check-square fs-2x text-success'><span class='path1'></span><span class='path2'></span></i></a>" : " ")
+                            + (@ViewBag.RoleId != @RoleId.CONSUMER && row.orderStatusId != @OrderStatusId.CANCEL && row.orderStatusId != @OrderStatusId.PURCHAED && row.orderStatusId != @OrderStatusId.DEPOSITED && @ViewBag.RoleId != @RoleId.ACCOUNTANT && @ViewBag.RoleId != @RoleId.PURCHASING_EMPLOYEE ? "<a title='Hủy yêu cầu' onclick='updateStatus(" + row.id + "," + 0 + ")' class='me-2 btn_manage cursor-pointer'><i class='ki-duotone ki-cross-square fs-2x text-danger'><span class='path1'></span><span class='path2'> </span></i></a>" : " ")
+                            + "<a title='Cập nhật' onclick='editItem(" + row.id + ")' class='me-2 btn_manage cursor-pointer'><span class='svg-icon-success svg-icon  svg-icon-1 svg_teh009'><span class='svg-icon-primary svg-icon  svg-icon-1'> <svg width='30' height='30' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg' class='fs-2x'><path opacity='0.3' fill-rule='evenodd' clip-rule='evenodd' d='M2 4.63158C2 3.1782 3.1782 2 4.63158 2H13.47C14.0155 2 14.278 2.66919 13.8778 3.04006L12.4556 4.35821C11.9009 4.87228 11.1726 5.15789 10.4163 5.15789H7.1579C6.05333 5.15789 5.15789 6.05333 5.15789 7.1579V16.8421C5.15789 17.9467 6.05333 18.8421 7.1579 18.8421H16.8421C17.9467 18.8421 18.8421 17.9467 18.8421 16.8421V13.7518C18.8421 12.927 19.1817 12.1387 19.7809 11.572L20.9878 10.4308C21.3703 10.0691 22 10.3403 22 10.8668V19.3684C22 20.8218 20.8218 22 19.3684 22H4.63158C3.1782 22 2 20.8218 2 19.3684V4.63158Z' fill='currentColor'></path><path d='M10.9256 11.1882C10.5351 10.7977 10.5351 10.1645 10.9256 9.77397L18.0669 2.6327C18.8479 1.85165 20.1143 1.85165 20.8953 2.6327L21.3665 3.10391C22.1476 3.88496 22.1476 5.15129 21.3665 5.93234L14.2252 13.0736C13.8347 13.4641 13.2016 13.4641 12.811 13.0736L10.9256 11.1882Z' fill='currentColor'></path><path d='M8.82343 12.0064L8.08852 14.3348C7.8655 15.0414 8.46151 15.7366 9.19388 15.6242L11.8974 15.2092C12.4642 15.1222 12.6916 14.4278 12.2861 14.0223L9.98595 11.7221C9.61452 11.3507 8.98154 11.5055 8.82343 12.0064Z' fill='currentColor'></path></svg></span></span></a>"
+                            + "</div>";
+                    }
+                },
+
+            ],
+            columnDefs: [
+                { targets: "no-sort", orderable: false },
+                { targets: "no-search", searchable: false },
+                { orderable: false, targets: [-1, 0] },
+            ],
+            aLengthMenu: [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+            drawCallback: function () {
+                $('#tableData tfoot').html("");
+                //$("#tableData thead:nth-child(1) tr").clone(true).appendTo("#tableData tfoot");
+                //$('#tableData tfoot tr').addClass("border-top");
+            }
+        });
+    }
+    function customBagdeColor(color) {
+        var percent = 80;
+        var fontColor = "";
+        var backColor = color;
+        // strip the leading # if it's there
+        color = color.replace(/^\s*#|\s*$/g, '');
+
+        // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
+        if (color.length == 3) {
+            color = color.replace(/(.)/g, '$1$1');
+        }
+
+        var r = parseInt(color.substr(0, 2), 16),
+            g = parseInt(color.substr(2, 2), 16),
+            b = parseInt(color.substr(4, 2), 16);
+
+        return '#' +
+            ((0 | (1 << 8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
+            ((0 | (1 << 8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
+            ((0 | (1 << 8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+    }
+
+    function showHistory() {
+        $("#tab-content-history").html("");
+        $.ajax({
+            url: systemURL + "orderUpdateHistory/api/get-change?orderId=" + updatingItemId,
+            type: "GET",
+            contentType: "application/json",
+            success: function (responseData) {
+                listChange = responseData.data;
+                listChange.forEach((item, index) => {
+                    changeArr = item.change.split(";");
+                    let itemChange = "<div class='w-300px item-change'>" +
+                        "<div class='text-gray-500 fs-6'>" + moment(item.createdTime).format("HH:mm DD/MM/YYYY") + "</div>" +
+                        "<div class='d-flex flex-column gap-2 p-4 rounded bg-white'>";
+                    if (changeArr.length > 0) {
+                        changeArr.forEach((value, indexChange) => {
+                            if (value != null) {
+                                itemChange += "<div class='text-gray-700 fs-6'>" + value + "</div>";
+                            }
+                        })
+                    }
+                    itemChange += "</div></div>";
+                    $("#tab-content-history").append(itemChange);
+
+                });
+            },
+            error: function (e) {
+                let itemChange = "<div class='w-300px item-change'>" +
+                    "<div class='text-gray-500 fs-6 text-center'>Không có cập nhật nào</div></div>";
+                $("#tab-content-history").append(itemChange);
+            }
+        })
+    }
+    async function editItem(id) {
+        updatingItemId = id;
+        orderId = id;
+        accountBuyPaging.id = id;
+        orderId = id;
+        if (@ViewBag.RoleId == @RoleId.CONSUMER) {
+            $("#role-show-add").addClass('d-none');
+            //$("#btnUpdateItem").addClass('d-none');
+            $("#list-account-auction").addClass('d-none');
+            //$("select[name=select-orderstatus]").attr("readonly", "readonly");
+            $("#orders-orderStatus").prop("disabled", true);
+        }
+        if (@ViewBag.RoleId == @RoleId.PURCHASING_EMPLOYEE) {
+
+            $("#role-show-add").addClass('d-none');
+        }
+        $("#modal-id").modal('show');
+        if (id > 0) {
+            editObj = await getItemById(id);
+            $("#title-modal").text("Thông tin yêu cầu #" + editObj.id);
+            $("#show-add-username").addClass("d-none");
+            $("#edit-item-account-buy").addClass('d-none');
+            $("#list-account-title").text("Danh sách tài khoản đấu giá biển " + editObj.productName);
+            loadResultAuction();
+            loadPaymentStatus();
+        }
+        $("#orders-price").val(id > 0 ? VND.format(editObj.price) : "0");
+        $("#orders-final-price").val(id > 0 ? VND.format(editObj.finalPrice) : "0");
+        $("#orders-product-name").val(id > 0 ? editObj.productName : "");
+        $("#orders-product-note").val(id > 0 ? editObj.note : "");
+        $("#orders-product-note").val(id > 0 ? editObj.note : "");
+        $("#orders-product-id").val(id > 0 ? editObj.id : "");
+        $("#orders-product-category").val(id > 0 ? editObj.productCategoryName : "");
+        $("#orders-product-brand").val(id > 0 ? editObj.productBrandName : "");
+        $("#orders-product-province").val(id > 0 ? editObj.provinceName : "");
+        $("#orders-orderStatus").val(id > 0 ? editObj.orderStatusId : "").trigger("change");
+        $("#orders-accountName").val(id > 0 ? editObj.accountName : "");
+        $("#orders-createdTime").val(id > 0 ? moment(editObj.createdTime).format("DD/MM/YYYY HH:mm:ss") : "");
+        $("#orders-registerOpenTime").val(id > 0 ? moment(editObj.registerOpenTime).format("DD/MM/YYYY HH:mm:ss") : "");
+        $("#orders-registerClosedTime").val(id > 0 ? moment(editObj.registerClosedTime).format("DD/MM/YYYY HH:mm:ss") : "");
+        let auctionOpenTime = moment(editObj.openTime).format("DD/MM/YYYY HH:mm").split(' ');
+        let auctionCloseTime = moment(editObj.closedTime).format("DD/MM/YYYY HH:mm").split(' ');
+        $("#orders-auctionTime").val(id > 0 ? auctionCloseTime[0] + " " + auctionOpenTime[1] + "-" + auctionCloseTime[1] : "");
+        loadAccountBuy();
+        //formatNumber();
+    }
+    async function updateItem(id) {
+        //validateInputNumber();
+        var updatingObj = {
+            "id": id,
+            "orderStatusId": $("#orders-orderStatus").val(),
+            "note": $("#orders-product-note").val(),
+            "finalPrice": $("#orders-final-price").val().split(/[.,,]/).join(''),
+            "price": $("#orders-price").val().split(/[.,,]/).join(''),
+        };
+        Swal.fire({
+            title: 'Xác nhận thay đổi?',
+            text: "Cập nhật",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#443',
+            confirmButtonText: 'Xác nhận',
+            cancelButtonText: 'Huỷ'
+        }).then((result) => {
+            if (result.value) {
+                $("#modal-id").modal('hide');
+                //CALL AJAX TO UPDATE
+                $.ajax({
+                    url: systemURL + "orders/api/update-by-viewmodel",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(updatingObj),
+                    beforeSend: function (xhr) {
+                        if (localStorage.token) {
+                            xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token);
+                        }
+                    },
+                    success: function (responseData) {
+                        // debugger;
+                        if (responseData.status == 200 && responseData.message === "SUCCESS") {
+                            $("#modal-id").modal('hide');
+
+                            Swal.fire(
+                                'Thành Công!',
+                                'Đã cập nhật',
+                                'success'
+                            );
+                            reGenTable();
+                            loadTotalOrderStatus();
+                            tableSearch();
+                            // Remove loading indication
+                            submitButton.removeAttribute('data-kt-indicator');
+                            // Enable button
+                            submitButton.disabled = false;
+
+                        }
+                    },
+                    error: function (e) {
+                        //console.log(e.message);
+                        Swal.fire(
+                            'Lỗi!',
+                            'Đã xảy ra lỗi, vui lòng thử lại',
+                            'error'
+                        );
+                        // Remove loading indication
+                        submitButton.removeAttribute('data-kt-indicator');
+                        // Enable button
+                        submitButton.disabled = false;
+                    }
+                });
+            }
+            else {
+                // Remove loading indication
+                submitButton.removeAttribute('data-kt-indicator');
+                // Enable button
+                submitButton.disabled = false;
+            }
+        })
+    }
+    async function deleteItem(id) {
+        updatingObj = table.ajax.json().data.find(c => c.id == id);
+        let objName = id > 0 ? updatingObj.name : "item";
+        Swal.fire({
+            title: 'Xác nhận thay đổi?',
+            text: "Xóa " + objName + "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Xoá',
+            cancelButtonText: 'Huỷ'
+        }).then((result) => {
+            if (result.value) {
+                //CALL AJAX TO DELETE
+                $.ajax({
+                    url: systemURL + "orders/api/delete",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ "id": id }),
+                    success: function (responseData) {
+                        // debugger;
+                        if (responseData.status == 200 && responseData.message === "SUCCESS") {
+                            Swal.fire(
+                                'Thành công!',
+                                'Đã xoá.',
+                                'success'
+                            );
+                            reGenTable();
+                            loadTotalOrderStatus();
+                            tableSearch();
+                        }
+                    },
+                    error: function (e) {
+                        //console.log(e.message);
+                        Swal.fire(
+                            'Lỗi!',
+                            'Đã xảy ra lỗi, vui lòng thử lại',
+                            'error'
+                        );
+                    }
+                });
+
+            }
+            else {
+                // Remove loading indication
+                submitButton.removeAttribute('data-kt-indicator');
+                // Enable button
+                submitButton.disabled = false;
+            }
+        });
+    }
+    async function getItemById(id) {
+        var data;
+        await $.ajax({
+            url: systemURL + "orders/api/detail2/" + id,
+            method: "GET",
+            success: function (responseData) {
+                data = responseData;
+            },
+            error: function (e) {
+            },
+        });
+        return data;
+    }
+    function loadTotalOrderStatus() {
+        $.ajax({
+            url: systemURL + "orders/api/get-total-orderstatus",
+            type: "GET",
+            contentType: "application/json",
+            beforeSend: function (xhr) {
+                if (localStorage.token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token);
+                }
+            },
+            success: function (responseData) {
+                $("#total-noprocess").text(responseData.totalNoProcess);
+                $("#total-approved").text(responseData.totalApproved);
+                $("#total-purchaed").text(responseData.totalPurchaed);
+                $("#total-cancel").text(responseData.totalCancel);
+                $("#total-deposited").text(responseData.totalDeposited);
+
+            },
+            error: function (e) {
+
+            }
+        });
+    }
+    function reGenTable() {
+        tableUpdating = 0;
+        table.destroy();
+        $(".tableHeaderFilter").val(null).trigger("change");
+        $("#tableData tbody").html('');
+        loadData();
+    }
+    function loadOrderType() {
+        $("#orderType").html("");
+        $.ajax({
+            url: systemURL + "orderType/api/list",
+            type: "GET",
+            contentType: "application/json",
+            success: function (responseData) {
+                let data = responseData.data;
+                data.forEach(function (item, index) {
+                    $("#orderType").append(new Option(item.name, item.id, false, false));
+                    $("#orders-orderType").append(new Option(item.name, item.id, false, false));
+                })
+            },
+            error: function (e) {
+
+            }
+        });
+    }
+    function loadOrderStatus() {
+        $("#orderStatus").html("");
+        $.ajax({
+            url: systemURL + "orderStatus/api/list",
+            type: "GET",
+            contentType: "application/json",
+            success: function (responseData) {
+                let data = responseData.data;
+                data.forEach(function (item, index) {
+
+                    if (@ViewBag.RoleId == @RoleId.ACCOUNTANT) {
+                        if (item.id == @OrderStatusId.APPROVED || item.id == @OrderStatusId.DEPOSITED || item.id == @OrderStatusId.PURCHAED) {
+                            $("#orders-orderStatus").append(new Option(item.name, item.id, false, false));
+                            $("#orderStatus").append(new Option(item.name, item.id, false, false));
+                        }
+                    }
+                    else if (@ViewBag.RoleId == @RoleId.PURCHASING_EMPLOYEE) {
+                        if (item.id == @OrderStatusId.PURCHAED || item.id == @OrderStatusId.DEPOSITED || item.id == @OrderStatusId.APPROVED || item.id == @OrderStatusId.NOPURCHAED) {
+                            $("#orders-orderStatus").append(new Option(item.name, item.id, false, false));
+                            $("#orderStatus").append(new Option(item.name, item.id, false, false));
+                        }
+                    }
+                    else if (@ViewBag.RoleId == @RoleId.PURCHASING_MANAGER || @ViewBag.RoleId == @RoleId.DIRECTOR) {
+                        if (item.id != @OrderStatusId.NOPURCHAED) {
+                            $("#orders-orderStatus").append(new Option(item.name, item.id, false, false));
+                            $("#orderStatus").append(new Option(item.name, item.id, false, false));
+                        }
+                    }
+                    else {
+                        $("#orders-orderStatus").append(new Option(item.name, item.id, false, false));
+                        $("#orderStatus").append(new Option(item.name, item.id, false, false));
+                    }
+
+                })
+            },
+            error: function (e) {
+
+            }
+        });
+    }
+    function loadPaymentStatus() {
+        $("#payment-status").html("");
+        $.ajax({
+            url: systemURL + "orderAccountPaymentStatus/api/list",
+            type: "GET",
+            contentType: "application/json",
+            success: function (responseData) {
+                let data = responseData.data;
+                data.forEach(function (item, index) {
+                    $("#payment-status").append(new Option(item.name, item.id, false, false));
+                });
+            },
+            error: function (e) {
+
+            }
+        });
+    }
+    function loadResultAuction() {
+        $("#result-auction").html("");
+        $.ajax({
+            url: systemURL + "orderAccountStatus/api/list",
+            type: "GET",
+            contentType: "application/json",
+            success: function (responseData) {
+                let data = responseData.data;
+                data.forEach(function (item, index) {
+                    $("#result-auction").append(new Option(item.name, item.id, false, false));
+                });
+            },
+            error: function (e) {
+
+            }
+        });
+    }
+    function loadAccountBuy() {
+        $("#tableAccount tbody").html("");
+        $.ajax({
+            url: systemURL + "accountBuy/api/accountbuy-paging",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(accountBuyPaging),
+            success: function (responseData) {
+                var data = responseData.data;
+                if (data.length == 0) {
+                    $("#tableAccount tbody").html("");
+                    let numberColSpan = @ViewBag.RoleId != @RoleId.CONSUMER ? 9 : 8;
+                    var nullRow = `<tr>
+                                                           <td colspan="${numberColSpan}" class="text-center">Không có dữ liệu</td>
+                                                       </tr>`;
+                    $(nullRow).appendTo($("#tableAccount tbody"));
+                    $("#account-buy-paging").html(
+                        `<ul class="pagination"><li class="paginate_button page-item previous disabled" id="tableData_previous"><a href="#" aria-controls="tableAccount" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item next disabled" id="tableData_next"><a href="#" aria-controls="tableAccount" data-dt-idx="1" tabindex="0" class="page-link">Tiếp</a></li></ul>`
+                    );
+                } else {
+                    let indexStart = responseData.indexStart;
+                    data.forEach(function (item, index) {
+                        var rowContent = "<tr>";
+                        let colorOrderAccountStatus = item.orderAccountStatusId == @OrderAccountStatusId.ACHIEVE ? "#04B440" : "#d02550";
+                        let colorPaymentStatus = item.orderPaymentStatusId == @OrderPaymentStatusId.COD ? "#04B440" : "#d02550";
+                        rowContent += "<td>" + indexStart + "</td>";
+                        rowContent += "<td>" + item.username + "</td>";
+                        rowContent += "<td>" + item.password + "</td>";
+                        let description = item.description == null ? "" : item.description;
+                        rowContent += "<td>" + description + "</td>";
+                        rowContent += "<td><label class=' py-3 px-4 label-color' style='background-color:" + customBagdeColor(colorPaymentStatus) + ";border-radius:8px;color : " + colorPaymentStatus + ";'>" + item.orderPaymentStatusName + "</label></td>";
+                        rowContent += "<td><label class=' py-3 px-4 label-color' style='background-color:" + customBagdeColor(colorOrderAccountStatus) + ";border-radius:8px; color : " + colorOrderAccountStatus + ";'>" + item.orderAccountStatusName + "</label></td>";
+
+                        rowContent += "<td>" + item.fullName + "</td>";
+                        rowContent += "<td>" + moment(item.createdTime).format("DD/MM/YYYY HH:mm:ss") + "</td>";
+                        if (@ViewBag.RoleId != @RoleId.CONSUMER) {
+                            rowContent += "<td class='column-operation'>"
+                                + "<a title='Cập nhật' onclick='editItemAccount(" + item.id + ")' class='me-2 btn_manage cursor-pointer'><span class='svg-icon-success svg-icon  svg-icon-1 svg_teh009'><span class='svg-icon-primary svg-icon  svg-icon-1'> <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path opacity='0.3' fill-rule='evenodd' clip-rule='evenodd' d='M2 4.63158C2 3.1782 3.1782 2 4.63158 2H13.47C14.0155 2 14.278 2.66919 13.8778 3.04006L12.4556 4.35821C11.9009 4.87228 11.1726 5.15789 10.4163 5.15789H7.1579C6.05333 5.15789 5.15789 6.05333 5.15789 7.1579V16.8421C5.15789 17.9467 6.05333 18.8421 7.1579 18.8421H16.8421C17.9467 18.8421 18.8421 17.9467 18.8421 16.8421V13.7518C18.8421 12.927 19.1817 12.1387 19.7809 11.572L20.9878 10.4308C21.3703 10.0691 22 10.3403 22 10.8668V19.3684C22 20.8218 20.8218 22 19.3684 22H4.63158C3.1782 22 2 20.8218 2 19.3684V4.63158Z' fill='currentColor'></path><path d='M10.9256 11.1882C10.5351 10.7977 10.5351 10.1645 10.9256 9.77397L18.0669 2.6327C18.8479 1.85165 20.1143 1.85165 20.8953 2.6327L21.3665 3.10391C22.1476 3.88496 22.1476 5.15129 21.3665 5.93234L14.2252 13.0736C13.8347 13.4641 13.2016 13.4641 12.811 13.0736L10.9256 11.1882Z' fill='currentColor'></path><path d='M8.82343 12.0064L8.08852 14.3348C7.8655 15.0414 8.46151 15.7366 9.19388 15.6242L11.8974 15.2092C12.4642 15.1222 12.6916 14.4278 12.2861 14.0223L9.98595 11.7221C9.61452 11.3507 8.98154 11.5055 8.82343 12.0064Z' fill='currentColor'></path></svg></span></span></a>"
+                                + "<a title='Cập nhật' onclick='deleteItemAccount(" + item.id + ")' class='me-2 btn_manage cursor-pointer'><span class='svg-icon-success svg-icon  svg-icon-1 svg_teh009'><span class='svg-icon-danger svg-icon  svg-icon-1'><svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z' fill='currentColor'></path><path opacity='0.5' d='M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z' fill='currentColor'></path><path opacity='0.5' d='M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z' fill='currentColor'></path></svg></span></a>"
+
+                                + "</td>";
+                        }
+                        rowContent += "</tr>";
+                        $(rowContent).appendTo($("#tableAccount tbody"));
+                        indexStart++;
+                    });
+                    document.getElementById('info-account-buy').innerHTML = responseData.pageInfo;
+                    pagination($("#account-buy-paging"), responseData.totalPage, accountBuyPaging.pageIndex);
+
+                }
+            },
+            error: function (e) {
+                $("#tableAccount tbody").html("");
+                var nullRow = `<tr>
+                                                               <td colspan="7" class="text-center">Không có dữ liệu</td>
+                                                           </tr>`;
+                $(nullRow).appendTo($("#tableAccount tbody"));
+                $("#account-buy-paging").html(
+                    `<ul class="pagination"><li class="paginate_button page-item previous disabled" id="tableData_previous"><a href="#" aria-controls="tableAccount" data-dt-idx="0" tabindex="0" class="page-link">Trước</a></li><li class="paginate_button page-item next disabled" id="tableData_next"><a href="#" aria-controls="tableAccount" data-dt-idx="1" tabindex="0" class="page-link">Tiếp</a></li></ul>`
+                );
+            }
+        })
+    }
+    async function editItemAccount(id) {
+
+        if (id == 0) {
+            loadUsernameAccountBuy();
+            $("#show-add-username").removeClass('d-none');
+            $("#edit-item-account-buy").addClass('d-none');
+        }
+        else {
+            $("#show-add-username").addClass('d-none');
+            $("#edit-item-account-buy").removeClass('d-none');
+            let objItemAccountBuy = await getItemAccountBuy(id);
+            updateOrderAccount.id = objItemAccountBuy.orderAccountId,
+                $("#code-room").val(objItemAccountBuy.description);
+            $("#payment-status").val(objItemAccountBuy.orderPaymentStatusId).trigger("change");
+            $("#result-auction").val(objItemAccountBuy.orderAccountStatusId).trigger("change");
+        }
+    }
+    async function addItemAccount() {
+        let listAccountBuy = $("#add-username").val();
+        if (listAccountBuy.length > 0) {
+            let objAdd = {
+                listOrderAccountId: [],
+                orderId: orderId,
+            }
+            listAccountBuy.forEach((item, index) => {
+                objAdd.listOrderAccountId.push(parseInt(item));
+            });
+            $.ajax({
+                url: systemURL + 'orderAccount/api/add-range',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(objAdd),
+                success: function (responseData) {
+                    Swal.fire(
+                        "Thành công",
+                        "Đã thêm tài khoản đấu giá thành công",
+                        "success"
+                    );
+                    $("#show-add-username").addClass("d-none");
+                    loadAccountBuy();
+                    reGenTable();
+                },
+                error: function (e) {
+                    Swal.fire(
+                        "Thất bại",
+                        "Chưa thêm tài khoản đấu giá",
+                        "error"
+                    );
+                    $("#show-add-username").addClass("d-none");
+                }
+            });
+        } else {
+            Swal.fire(
+                "Vui lòng chọn tài khoản",
+                "Không thể để trống tài khoản",
+                "warning",
+            );
+        }
+    }
+    function loadUsernameAccountBuy() {
+        $("#add-username").html("");
+        $.ajax({
+            url: systemURL + 'accountBuy/api/list',
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (responseData) {
+                var data = responseData.data;
+                data.forEach(function (item, index) {
+                    $("#add-username").append(new Option(item.username + " (" + item.fullName + ")", item.id, false, false));
+                });
+            },
+            error: function (e) {
+
+            }
+        });
+    }
+    async function getItemAccountBuy(id) {
+        let data;
+        await $.ajax({
+            url: systemURL + "orderAccount/api/detail-accountbuy-viewmodel?accountBuyId=" + id + "&orderId=" + orderId,
+            method: "GET",
+            success: function (responseData) {
+                data = responseData;
+            },
+            error: function (e) {
+            },
+        });
+        return data;
+    }
+    async function updateItemAccount() {
+        updateOrderAccount.description = $("#code-room").val();
+        updateOrderAccount.orderPaymentStatusId = $("#payment-status").val();
+        updateOrderAccount.orderAccountStatusId = $("#result-auction").val();
+        $.ajax({
+            url: systemURL + 'orderAccount/api/update-by-view-model',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(updateOrderAccount),
+            success: function () {
+                Swal.fire(
+                    "Thành công",
+                    "Đã cập nhật",
+                    "success"
+                );
+                $("#edit-item-account-buy").addClass('d-none');
+                loadAccountBuy();
+                reGenTable();
+            },
+            error: function (e) {
+                Swal.fire(
+                    "Thất bại",
+                    "Cập nhật thất bại",
+                    "error"
+                );
+                $("#edit-item-account-buy").addClass('d-none');
+            }
+        });
+
+    }
+    async function deleteItemAccount(accountBuyId) {
+        Swal.fire({
+            title: 'Xác nhận thay đổi?',
+            text: 'Xóa ',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Xoá',
+            cancelButtonText: 'Huỷ'
+        }).then((result) => {
+            if (result.value) {
+                //CALL AJAX TO DELETE
+                $.ajax({
+                    url: systemURL + "orderAccount/api/delete2?accountBuyId=" + accountBuyId + "&orderId=" + orderId,
+                    type: "POST",
+                    contentType: "application/json",
+                    success: function (responseData) {
+                        // debugger;
+                        Swal.fire(
+                            'Thành công!',
+                            'Đã xoá.',
+                            'success'
+                        );
+                        loadAccountBuy();
+                        reGenTable();
+                        loadTotalOrderStatus();
+
+                    },
+                    error: function (e) {
+                        //console.log(e.message);
+                        Swal.fire(
+                            'Lỗi!',
+                            'Đã xảy ra lỗi, vui lòng thử lại',
+                            'error'
+                        );
+                    }
+                });
+
+            }
+            else {
+                // Remove loading indication
+                submitButton.removeAttribute('data-kt-indicator');
+                // Enable button
+                submitButton.disabled = false;
+            }
+        });
+    }
+    async function updateStatus(id, confirm) {
+        let obj = await getItemById(id);
+        Swal.fire({
+            title: 'Xác nhận thay đổi?',
+            text: confirm > 0 ? "Duyệt yêu cầu #" + obj.id : "Hủy yêu cầu #" + obj.id,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#443',
+            confirmButtonText: 'Xác nhận',
+            cancelButtonText: 'Huỷ'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: systemURL + "orders/api/change-order-status?orderId=" + id + "&confirm=" + confirm,
+                    type: "POST",
+                    contentType: "application/json",
+
+                    success: function (e) {
+                        Swal.fire(
+                            "Thành công",
+                            "Đã duyệt yêu cầu",
+                            "success"
+                        );
+                        reGenTable();
+                        loadTotalOrderStatus();
+                        tableSearch();
+                    }
+                });
+            }
+            else {
+                // Remove loading indication
+                submitButton.removeAttribute('data-kt-indicator');
+                // Enable button
+                submitButton.disabled = false;
+            }
+        });
+
+    }
+    function searchOrderStatus(orderStatusId) {
+        $("#orderStatus").val(orderStatusId).trigger("change");
+        tableSearch();
+    }
+    function searchParamURL() {
+        let paramURL = window.location.search;
+        const urlParam = new URLSearchParams(paramURL);
+        if (urlParam.size > 0) {
+            const valueOrderId = urlParam.get('orderId');
+            if (valueOrderId.length > 0) {
+                editItem(parseInt(valueOrderId));
+            }
+        }
+
+    }
+    function exportExcel() {
+        var fillterForExport = {
+            id: $("#fillter-order-id").val(),
+            productName: $("#fillter-order-product-name").val(),
+            price: $("#select-money").val(),
+            registerClosedTime: "",
+            auctionTime: "",
+            accountName: $("#fillter-account-name").val(),
+            orderStatusId: $("#orderStatus").val().toString(),
+            createdTime: "",
+        }
+        if ($("#register-date-value").val().length > 0) {
+
+            let registerDateArr = $("#register-date-value").val().split(' - ');
+            let searchDateArrs = [];
+
+            if (registerDateArr.length == 1) {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+                searchDateArrs.push("1");
+            }
+            else {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[1], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+            }
+            fillterForExport.registerClosedTime = searchDateArrs.toString();
+        }
+        if ($("#auction-date-value").val().length > 0) {
+
+            let registerDateArr = $("#auction-date-value").val().split(' - ');
+            let searchDateArrs = [];
+            if (registerDateArr.length == 1) {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+                searchDateArrs.push("1");
+            }
+            else {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[1], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+            }
+            fillterForExport.auctionTime = searchDateArrs.toString();
+        }
+
+        if ($("#created-time-value").val().length > 0) {
+
+            let registerDateArr = $("#created-time-value").val().split(' - ');
+            let searchDateArrs = [];
+
+            if (registerDateArr.length == 1) {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+                searchDateArrs.push("1");
+            }
+            else {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[1], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+            }
+            fillterForExport.createdTime = searchDateArrs.toString();
+        }
+        let target = document.createElement("a");
+        target.href = `/orders/api/export-excel?id=${fillterForExport.id}&productName=${fillterForExport.productName}&price=${fillterForExport.price}&registerClosedTime=${fillterForExport.registerClosedTime}&auctionTime=${fillterForExport.auctionTime}&accountName=${fillterForExport.accountName}&orderStatusId=${fillterForExport.orderStatusId}&createdTime=${fillterForExport.createdTime}`;
+        target.click();
+        target.remove();
+        btnExportExcel.removeAttribute('data-kt-indicator');
+        btnExportExcel.disabled = false;
+
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!--end:Base load data-->
+<!--begin:setting in data table-->
+<script>
+    function tableSearch() {
+        table.column(1).search($("#tableData thead:nth-child(2) tr th:nth-child(2) input").val());
+        table.column(2).search($("#tableData thead:nth-child(2) tr th:nth-child(3) input").val());
+        table.column(3).search($("#tableData thead:nth-child(2) tr th:nth-child(4) select").val());
+        table.column(6).search($("#tableData thead:nth-child(2) tr th:nth-child(7) input").val());
+        table.column(7).search($("#tableData thead:nth-child(2) tr th:nth-child(8) select").val());
+
+        if ($("#register-date-value").val().length > 0) {
+
+            let registerDateArr = $("#register-date-value").val().split(' - ');
+            let searchDateArrs = [];
+
+            if (registerDateArr.length == 1) {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+                searchDateArrs.push("1");
+            }
+            else {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[1], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+            }
+            table.column(4).search(searchDateArrs.toString());
+        }
+        else {
+            table.column(4).search("");
+        }
+        if ($("#auction-date-value").val().length > 0) {
+
+            let registerDateArr = $("#auction-date-value").val().split(' - ');
+            let searchDateArrs = [];
+            if (registerDateArr.length == 1) {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+                searchDateArrs.push("1");
+            }
+            else {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[1], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+            }
+            table.column(5).search(searchDateArrs.toString());
+        }
+        else {
+            table.column(5).search("");
+        }
+        if ($("#created-time-value").val().length > 0) {
+
+            let registerDateArr = $("#created-time-value").val().split(' - ');
+            let searchDateArrs = [];
+
+            if (registerDateArr.length == 1) {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+                searchDateArrs.push("1");
+            }
+            else {
+                searchDateArrs.push(moment(registerDateArr[0], "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"));
+                searchDateArrs.push(moment(registerDateArr[1], "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"));
+            }
+            table.column(8).search(searchDateArrs.toString());
+        }
+        else {
+            table.column(8).search("");
+        }
+        table.draw();
+    }
+    $("input[data-type='currency']").on("change keyup blur", function () {
+        formatCurrency($(this));
+    });
+    function formatNumberCurrency(n) {
+        return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
+    function formatCurrency(input, blur) {
+        // appends $ to value, validates decimal side
+        // and puts cursor back in right position.
+
+        // get input value
+        var input_val = input.val();
+
+        // don't validate empty input
+        if (input_val === "") { return; }
+
+        // original length
+        var original_len = input_val.length;
+
+        // initial caret position
+        var caret_pos = input.prop("selectionStart");
+
+        // check for decimal
+        if (input_val.indexOf(".") >= 0) {
+
+            // get position of first decimal
+            // this prevents multiple decimals from
+            // being entered
+            var decimal_pos = input_val.indexOf(".");
+
+            // split number by decimal point
+            var left_side = input_val.substring(0, decimal_pos);
+            var right_side = input_val.substring(decimal_pos);
+
+            // add commas to left side of number
+            left_side = formatNumberCurrency(left_side);
+
+            // validate right side
+            right_side = formatNumberCurrency(right_side);
+
+            // On blur make sure 2 numbers after decimal
+
+            // Limit decimal to only 2 digits
+            right_side = right_side.substring(0, 2);
+
+            // join number by .
+            input_val = left_side + "." + right_side;
+
+        } else {
+            // no decimal entered
+            // add commas to number
+            // remove all non-digits
+            input_val = formatNumberCurrency(input_val);
+
+            // final formatting
+        }
+
+        // send updated string to input
+        input.val(input_val);
+
+        // put caret back in the right position
+        var updated_len = input_val.length;
+        caret_pos = updated_len - original_len + caret_pos;
+        input[0].setSelectionRange(caret_pos, caret_pos);
+    }
+</script>
+<!--end:setting in data table-->

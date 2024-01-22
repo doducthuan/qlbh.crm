@@ -1,0 +1,105 @@
+﻿@{ Layout = null; }
+<script>
+    setTimeout(function () {
+        $(".page-loader").addClass('hide');
+    }, 500);
+</script>
+<!--begin::Javascript-->
+<script>var hostUrl = "/admin/assets/index.html";</script>
+
+<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+<script src="/admin/assets/plugins/global/plugins.bundle.js"></script>
+<script src="/admin/assets/js/scripts.bundle.js"></script>
+<!--end::Global Javascript Bundle-->
+<!--begin::Vendors Javascript(used for this page only)-->
+<script src="/admin/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/index.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/xy.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/percent.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/radar.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/map.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/geodata/continentsLow.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/geodata/usaLow.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/geodata/worldTimeZonesLow.js"></script>
+<script src="/admin/cdn.amcharts.com/lib/5/geodata/worldTimeZoneAreasLow.js"></script>
+<script src="/admin/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+<!--end::Vendors Javascript-->
+<!--begin::Custom Javascript(used for this page only)-->
+<script src="/admin/assets/js/widgets.bundle.js"></script>
+<script src="/admin/assets/js/custom/widgets.js"></script>
+<script src="/admin/assets/js/custom/apps/chat/chat.js"></script>
+<script src="/admin/assets/js/custom/utilities/modals/upgrade-plan.js"></script>
+<script src="/admin/assets/js/custom/utilities/modals/create-app.js"></script>
+<script src="/admin/assets/js/custom/utilities/modals/new-target.js"></script>
+<script src="/admin/assets/js/custom/utilities/modals/users-search.js"></script>
+<!--end::Custom Javascript-->
+<!--end::Javascript-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js" integrity="sha512-7rhBJh1om/W5Ztx7WiYOR9h2wlSaTmPyQMoHFtbT/FVNIA12y6S6I8HY9mrBS1uJ3dSU/R3qaSAXsGYuRjMDxg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@* <script src="~/js/notification-hub.js"></script> *@
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-messaging-compat.js"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAHCCIMhmGNIyzEHDR8Nc579zA49mY1g5A",
+        authDomain: "purchasingms-8b968.firebaseapp.com",
+        projectId: "purchasingms-8b968",
+        storageBucket: "purchasingms-8b968.appspot.com",
+        messagingSenderId: "287105718827",
+        appId: "1:287105718827:web:a9e02d05f82fe61cb0a86e",
+        measurementId: "G-6Q93J1QTDW"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+    messaging.getToken({ vapidKey: "BERWhRBGZS1zRqLKtcn1SabPKJ6HsDzUbjmwVFgM5s2Ezv61c8WlxspSsB9g1O2vMBA8qd9d3LvEwGdPk-m-7LI" }).then((currentToken) => {
+        if (currentToken) {
+            console.log(currentToken);
+            sendTokenToServer(currentToken);
+            setDeviceToken(currentToken);
+        }
+        else {
+            setTokenSentToServer(false);
+        }
+    }).catch((err) => {
+        console.log(err);
+        // if error
+        setTokenSentToServer(false);
+    })
+
+    function sendTokenToServer(currentToken) {
+        if (!isTokenSentToServer()) {
+            console.log('Sending token to server ...');
+            setTokenSentToServer(true);
+        } else {
+            console.log('Token already available in the server');
+        }
+    }
+    function isTokenSentToServer() {
+        return window.localStorage.getItem('sentToServer') === '1';
+    }
+    function setTokenSentToServer(sent) {
+        window.localStorage.setItem('sentToServer', sent ? '1' : '0');
+    }
+
+    function setDeviceToken(currentToken) {
+        $.ajax({
+            url: systemURL + "notification/api/set-device",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({deviceToken : currentToken, device: 1}),
+            beforeSend: function (xhr) {
+                if (localStorage.token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token);
+                }
+            },
+            success: function (responseData) {
+            },
+            error: function (e) {
+                console.error(e)
+            }
+        });
+    }
+</script>

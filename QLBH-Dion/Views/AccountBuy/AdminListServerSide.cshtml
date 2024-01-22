@@ -1,0 +1,938 @@
+@using QLBH_Dion.Constants;
+@{
+    Layout = "_Admin_Layout";
+    ViewBag.CurrentPage = "accountbuy";
+}
+<style>
+    .table-content {
+        padding: 15px;
+        background: var(--bs-app-header-base-bg-color);
+        border-radius: 8px;
+    }
+
+    #reset_Password {
+        float: right;
+        background-color: transparent;
+        border: none;
+    }
+
+    .c_pointer {
+        cursor: pointer;
+    }
+
+    #toggle_password {
+        top: 55%;
+        left: 90%;
+    }
+
+    table thead tr th {
+        white-space: nowrap;
+    }
+</style>
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+    <!--begin::Toolbar container-->
+    <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+        <!--begin::Page title-->
+        <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+            <!--begin::Title-->
+            <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Danh sách tài khoản đấu giá</h1>
+            <!--end::Title-->
+            <!--begin::Breadcrumb-->
+            <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                <!--begin::Item-->
+                <li class="breadcrumb-item text-muted">
+                    <a class="text-muted text-hover-primary">Trang chủ</a>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item">
+                    <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item text-muted">Quản lý tài khoản</li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item">
+                    <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item text-muted">Danh sách tài khoản đấu giá</li>
+                <!--end::Item-->
+            </ul>
+            <!--end::Breadcrumb-->
+        </div>
+        <!--end::Page title-->
+    </div>
+    <!--end::Toolbar container-->
+</div>
+<div id="kt_app_content" class="app-content  flex-column-fluid ">
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container  container-fluid ">
+        <!--begin::Row-->
+        <div class="table-content">
+            <!--begin::Col-->
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-stack mb-5">
+                <!--begin::Search-->
+                <div class="d-flex align-items-center position-relative my-1">
+                    <i class="ki-duotone ki-magnifier fs-1 position-absolute ms-6"><span class="path1"></span><span class="path2"></span></i>
+                    <input type="search" data-kt-docs-table-filter="search" class="form-control form-control-solid w-250px ps-15" id="search-input" placeholder="Tìm kiếm" />
+                </div>
+                <!--end::Search-->
+                <!--begin::Toolbar-->
+                <div class="d-flex justify-content-end" data-kt-docs-table-toolbar="base">
+
+                    <!--begin::Add customer-->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="tooltip" title="Tạo mới" onclick="editItem(0)">
+                        <i class="ki-duotone ki-plus fs-2"></i>
+                        Tạo mới
+                    </button>
+                    <!--end::Add customer-->
+                </div>
+                <!--end::Toolbar-->
+                <!--begin::Group actions-->
+                <div class="d-flex justify-content-end align-items-center d-none" data-kt-docs-table-toolbar="selected">
+                    <div class="fw-bold me-5">
+                        <span class="me-2" data-kt-docs-table-select="selected_count"></span> Selected
+                    </div>
+
+                    <button type="button" class="btn btn-danger" data-bs-toggle="tooltip" title="Coming Soon">
+                        Selection Action
+                    </button>
+                </div>
+                <!--end::Group actions-->
+            </div>
+            <!--end::Wrapper-->
+            <!--begin::Datatable-->
+            <table id="tableData" class="table table-hover table-rounded table-row-bordered gy-3 gs-3">
+                <thead>
+                    <tr class="fw-bold fs-6 text-gray-800">
+                        <th>STT</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Mật khẩu</th>
+                        <th>Trạng thái</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <thead>
+                    <tr class="fs-6">
+                        <th></th>
+                        <th><input type="text" class="form-control tableheaderFillter" /></th>
+                        <th><input type="text" class="form-control tableheaderFillter" /></th>               
+                        <th>
+                            <select class="form-select tableheaderFillter" id="filterAccountStatusId" data-control="select2" data-placeholder="" data-allow-clear="true" multiple>
+                            </select>
+                        </th>
+                        <th><input type="text" class="form-control tableheaderFillter" /></th>
+                        <th><input type="text" class="form-control tableheaderFillter" /></th>
+                        <th class="column-date">
+                            <div class="input-group mb-1 date_picker" id="fillter_startDate" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                <input id="fillter_startDate_value" readonly type="text" class="form-control tableheaderFillter" data-td-target="#fillter_startDate" />
+                                <span class="input-group-text cursor-pointer" data-td-target="#fillter_startDate" title="Ngày bắt đầu" data-td-toggle="datetimepicker">
+                                    <span class="svg-icon svg-icon svg-icon-1 svg_calender">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path opacity="0.3" d="M21 22H3C2.4 22 2 21.6 2 21V5C2 4.4 2.4 4 3 4H21C21.6 4 22 4.4 22 5V21C22 21.6 21.6 22 21 22Z" fill="currentColor" />
+                                            <path d="M6 6C5.4 6 5 5.6 5 5V3C5 2.4 5.4 2 6 2C6.6 2 7 2.4 7 3V5C7 5.6 6.6 6 6 6ZM11 5V3C11 2.4 10.6 2 10 2C9.4 2 9 2.4 9 3V5C9 5.6 9.4 6 10 6C10.6 6 11 5.6 11 5ZM15 5V3C15 2.4 14.6 2 14 2C13.4 2 13 2.4 13 3V5C13 5.6 13.4 6 14 6C14.6 6 15 5.6 15 5ZM19 5V3C19 2.4 18.6 2 18 2C17.4 2 17 2.4 17 3V5C17 5.6 17.4 6 18 6C18.6 6 19 5.6 19 5Z" fill="currentColor" />
+                                            <path d="M8.8 13.1C9.2 13.1 9.5 13 9.7 12.8C9.9 12.6 10.1 12.3 10.1 11.9C10.1 11.6 10 11.3 9.8 11.1C9.6 10.9 9.3 10.8 9 10.8C8.8 10.8 8.59999 10.8 8.39999 10.9C8.19999 11 8.1 11.1 8 11.2C7.9 11.3 7.8 11.4 7.7 11.6C7.6 11.8 7.5 11.9 7.5 12.1C7.5 12.2 7.4 12.2 7.3 12.3C7.2 12.4 7.09999 12.4 6.89999 12.4C6.69999 12.4 6.6 12.3 6.5 12.2C6.4 12.1 6.3 11.9 6.3 11.7C6.3 11.5 6.4 11.3 6.5 11.1C6.6 10.9 6.8 10.7 7 10.5C7.2 10.3 7.49999 10.1 7.89999 10C8.29999 9.90003 8.60001 9.80003 9.10001 9.80003C9.50001 9.80003 9.80001 9.90003 10.1 10C10.4 10.1 10.7 10.3 10.9 10.4C11.1 10.5 11.3 10.8 11.4 11.1C11.5 11.4 11.6 11.6 11.6 11.9C11.6 12.3 11.5 12.6 11.3 12.9C11.1 13.2 10.9 13.5 10.6 13.7C10.9 13.9 11.2 14.1 11.4 14.3C11.6 14.5 11.8 14.7 11.9 15C12 15.3 12.1 15.5 12.1 15.8C12.1 16.2 12 16.5 11.9 16.8C11.8 17.1 11.5 17.4 11.3 17.7C11.1 18 10.7 18.2 10.3 18.3C9.9 18.4 9.5 18.5 9 18.5C8.5 18.5 8.1 18.4 7.7 18.2C7.3 18 7 17.8 6.8 17.6C6.6 17.4 6.4 17.1 6.3 16.8C6.2 16.5 6.10001 16.3 6.10001 16.1C6.10001 15.9 6.2 15.7 6.3 15.6C6.4 15.5 6.6 15.4 6.8 15.4C6.9 15.4 7.00001 15.4 7.10001 15.5C7.20001 15.6 7.3 15.6 7.3 15.7C7.5 16.2 7.7 16.6 8 16.9C8.3 17.2 8.6 17.3 9 17.3C9.2 17.3 9.5 17.2 9.7 17.1C9.9 17 10.1 16.8 10.3 16.6C10.5 16.4 10.5 16.1 10.5 15.8C10.5 15.3 10.4 15 10.1 14.7C9.80001 14.4 9.50001 14.3 9.10001 14.3C9.00001 14.3 8.9 14.3 8.7 14.3C8.5 14.3 8.39999 14.3 8.39999 14.3C8.19999 14.3 7.99999 14.2 7.89999 14.1C7.79999 14 7.7 13.8 7.7 13.7C7.7 13.5 7.79999 13.4 7.89999 13.2C7.99999 13 8.2 13 8.5 13H8.8V13.1ZM15.3 17.5V12.2C14.3 13 13.6 13.3 13.3 13.3C13.1 13.3 13 13.2 12.9 13.1C12.8 13 12.7 12.8 12.7 12.6C12.7 12.4 12.8 12.3 12.9 12.2C13 12.1 13.2 12 13.6 11.8C14.1 11.6 14.5 11.3 14.7 11.1C14.9 10.9 15.2 10.6 15.5 10.3C15.8 10 15.9 9.80003 15.9 9.70003C15.9 9.60003 16.1 9.60004 16.3 9.60004C16.5 9.60004 16.7 9.70003 16.8 9.80003C16.9 9.90003 17 10.2 17 10.5V17.2C17 18 16.7 18.4 16.2 18.4C16 18.4 15.8 18.3 15.6 18.2C15.4 18.1 15.3 17.8 15.3 17.5Z" fill="currentColor" />
+                                        </svg>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="input-group date_picker" id="fillter_endDate" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                <input id="fillter_endDate_value" readonly type="text" class="form-control tableheaderFillter" data-td-target="#fillter_endDate" />
+                                <span class="input-group-text cursor-pointer" data-td-target="#fillter_startDate" title="Ngày bắt đầu" data-td-toggle="datetimepicker">
+                                    <span class="svg-icon svg-icon svg-icon-1 svg_calender">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path opacity="0.3" d="M21 22H3C2.4 22 2 21.6 2 21V5C2 4.4 2.4 4 3 4H21C21.6 4 22 4.4 22 5V21C22 21.6 21.6 22 21 22Z" fill="currentColor" />
+                                            <path d="M6 6C5.4 6 5 5.6 5 5V3C5 2.4 5.4 2 6 2C6.6 2 7 2.4 7 3V5C7 5.6 6.6 6 6 6ZM11 5V3C11 2.4 10.6 2 10 2C9.4 2 9 2.4 9 3V5C9 5.6 9.4 6 10 6C10.6 6 11 5.6 11 5ZM15 5V3C15 2.4 14.6 2 14 2C13.4 2 13 2.4 13 3V5C13 5.6 13.4 6 14 6C14.6 6 15 5.6 15 5ZM19 5V3C19 2.4 18.6 2 18 2C17.4 2 17 2.4 17 3V5C17 5.6 17.4 6 18 6C18.6 6 19 5.6 19 5Z" fill="currentColor" />
+                                            <path d="M8.8 13.1C9.2 13.1 9.5 13 9.7 12.8C9.9 12.6 10.1 12.3 10.1 11.9C10.1 11.6 10 11.3 9.8 11.1C9.6 10.9 9.3 10.8 9 10.8C8.8 10.8 8.59999 10.8 8.39999 10.9C8.19999 11 8.1 11.1 8 11.2C7.9 11.3 7.8 11.4 7.7 11.6C7.6 11.8 7.5 11.9 7.5 12.1C7.5 12.2 7.4 12.2 7.3 12.3C7.2 12.4 7.09999 12.4 6.89999 12.4C6.69999 12.4 6.6 12.3 6.5 12.2C6.4 12.1 6.3 11.9 6.3 11.7C6.3 11.5 6.4 11.3 6.5 11.1C6.6 10.9 6.8 10.7 7 10.5C7.2 10.3 7.49999 10.1 7.89999 10C8.29999 9.90003 8.60001 9.80003 9.10001 9.80003C9.50001 9.80003 9.80001 9.90003 10.1 10C10.4 10.1 10.7 10.3 10.9 10.4C11.1 10.5 11.3 10.8 11.4 11.1C11.5 11.4 11.6 11.6 11.6 11.9C11.6 12.3 11.5 12.6 11.3 12.9C11.1 13.2 10.9 13.5 10.6 13.7C10.9 13.9 11.2 14.1 11.4 14.3C11.6 14.5 11.8 14.7 11.9 15C12 15.3 12.1 15.5 12.1 15.8C12.1 16.2 12 16.5 11.9 16.8C11.8 17.1 11.5 17.4 11.3 17.7C11.1 18 10.7 18.2 10.3 18.3C9.9 18.4 9.5 18.5 9 18.5C8.5 18.5 8.1 18.4 7.7 18.2C7.3 18 7 17.8 6.8 17.6C6.6 17.4 6.4 17.1 6.3 16.8C6.2 16.5 6.10001 16.3 6.10001 16.1C6.10001 15.9 6.2 15.7 6.3 15.6C6.4 15.5 6.6 15.4 6.8 15.4C6.9 15.4 7.00001 15.4 7.10001 15.5C7.20001 15.6 7.3 15.6 7.3 15.7C7.5 16.2 7.7 16.6 8 16.9C8.3 17.2 8.6 17.3 9 17.3C9.2 17.3 9.5 17.2 9.7 17.1C9.9 17 10.1 16.8 10.3 16.6C10.5 16.4 10.5 16.1 10.5 15.8C10.5 15.3 10.4 15 10.1 14.7C9.80001 14.4 9.50001 14.3 9.10001 14.3C9.00001 14.3 8.9 14.3 8.7 14.3C8.5 14.3 8.39999 14.3 8.39999 14.3C8.19999 14.3 7.99999 14.2 7.89999 14.1C7.79999 14 7.7 13.8 7.7 13.7C7.7 13.5 7.79999 13.4 7.89999 13.2C7.99999 13 8.2 13 8.5 13H8.8V13.1ZM15.3 17.5V12.2C14.3 13 13.6 13.3 13.3 13.3C13.1 13.3 13 13.2 12.9 13.1C12.8 13 12.7 12.8 12.7 12.6C12.7 12.4 12.8 12.3 12.9 12.2C13 12.1 13.2 12 13.6 11.8C14.1 11.6 14.5 11.3 14.7 11.1C14.9 10.9 15.2 10.6 15.5 10.3C15.8 10 15.9 9.80003 15.9 9.70003C15.9 9.60003 16.1 9.60004 16.3 9.60004C16.5 9.60004 16.7 9.70003 16.8 9.80003C16.9 9.90003 17 10.2 17 10.5V17.2C17 18 16.7 18.4 16.2 18.4C16 18.4 15.8 18.3 15.6 18.2C15.4 18.1 15.3 17.8 15.3 17.5Z" fill="currentColor" />
+                                        </svg>
+                                    </span>
+                                </span>
+                            </div>
+                        </th>
+
+                        <th class="text-center">
+                            <div class="search-control">
+                                <button class="btn btn-primary form-control mb-1" title="Tìm kiếm" id="btnTableSearch">
+                                    <span class="svg-icon svg-icon svg-icon-1 svg_search_2 m-0">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M21.7 18.9L18.6 15.8C17.9 16.9 16.9 17.9 15.8 18.6L18.9 21.7C19.3 22.1 19.9 22.1 20.3 21.7L21.7 20.3C22.1 19.9 22.1 19.3 21.7 18.9Z" fill="currentColor"></path>
+                                            <path opacity="0.3" d="M11 20C6 20 2 16 2 11C2 6 6 2 11 2C16 2 20 6 20 11C20 16 16 20 11 20ZM11 4C7.1 4 4 7.1 4 11C4 14.9 7.1 18 11 18C14.9 18 18 14.9 18 11C18 7.1 14.9 4 11 4ZM8 11C8 9.3 9.3 8 11 8C11.6 8 12 7.6 12 7C12 6.4 11.6 6 11 6C8.2 6 6 8.2 6 11C6 11.6 6.4 12 7 12C7.6 12 8 11.6 8 11Z" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+                                <button class="btn btn-secondary form-control" title="Reset" id="btnTableResetSearch">
+                                    <span class="svg-icon svg-icon svg-icon-1 svg_cancel m-0">
+                                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="9.39844" y="20.7144" width="16" height="2.66667" rx="1.33333" transform="rotate(-45 9.39844 20.7144)" fill="currentColor"></rect>
+                                            <rect x="11.2852" y="9.40039" width="16" height="2.66667" rx="1.33333" transform="rotate(45 11.2852 9.40039)" fill="currentColor"></rect>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr class="border-top fw-bold fs-6 text-gray-800">
+                    </tr>
+                </tfoot>
+            </table>
+            <!--end::Datatable-->
+            <div class="modal fade" id="modal-account">
+                <div class="modal-dialog modal-xs modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="title-modal-account"></h3>
+                            <!--begin::Close-->
+                            <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                            </div>
+                            <!--end::Close-->
+                        </div>
+                        <div class="modal-body">
+                            <form action="#">
+                                <div class="row">
+                                    <div class="col-sm-12 d-none">
+                                        <div class="form-group">
+                                            <div class="mb-5">
+                                                <label class="required form-label" id="basic-addon-id">Tên đăng nhập</label>
+                                                <input type="text" required autocomplete="off" class="form-control input-username" id="account-id" aria-label="username" aria-describedby="basic-addon-username" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="mb-5">
+                                                <label class="required form-label" id="basic-addon-username">Tên đăng nhập</label>
+                                                <input type="text" required autocomplete="off" class="form-control input-username none-space" id="account-username" aria-label="username" aria-describedby="basic-addon-username" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group position-relative">
+
+                                            <div class="mb-5">
+                                                <button id="reset_Password"><i class="fa-solid fa-clock-rotate-left"></i> Đặt lại mật khẩu</button>
+
+                                                <label class="required form-label" id="basic-addon-password">Mật khẩu</label>
+
+                                                <input type="password" required autocomplete="off" class="form-control input-password none-space" id="account-password" aria-label="password" aria-describedby="basic-addon-password" readonly />
+
+                                                <span type="button" class="svg-icon svg-icon-1 fs-3 position-absolute me-5 end-0 btn_show_pass" data-target="#account-password" id="toggle_password">
+                                                    <i class="ki-duotone ki-eye fs-3">
+                                                        <span class="path1 ki-uniEC0B"></span>
+                                                        <span class="path2 ki-uniEC0B"></span>
+                                                        <span class="path3 ki-uniEC0D"></span>
+                                                    </i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-sm-12 hide-on-add">
+                                        <div class="form-group">
+                                            <div class="mb-5">
+                                                <label class="form-label required" id="basic-addon-statusId">Trạng thái</label>
+                                                <select class="form-select dataSelect" id="account-statusId" data-control="select2" data-dropdown-parent="#modal-account"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="mb-5">
+                                                <label class="required form-label" id="basic-addon-fullName">Họ tên</label>
+                                                <input type="text" autocomplete="off" class="form-control input-fullName none-space" id="account-fullName" aria-label="fullName" aria-describedby="basic-addon-fullName" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="mb-5">
+                                                <label class="required form-label" id="basic-addon-fullName">Email</label>
+                                                <input type="text" autocomplete="off" class="form-control input-fullName none-space" id="account-email" aria-label="fullName" aria-describedby="basic-addon-fullName" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-bs-dismiss="modal">
+                                Đóng
+                            </button>
+                            <button type="button" class="btn btn-primary" id="btnUpdateItem">
+                                <span class="indicator-label">
+                                    Lưu
+                                </span>
+                                <span class="indicator-progress">
+                                    Đang tải... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Col-->
+        </div>
+    </div>
+    <!--end::Content container-->
+</div>
+<!--begin:Base load data-->
+<script>
+    var showItem = ['id', 'fullName', 'username', 'roleId', 'accountStatusId', 'createdTime'];
+    var dataSource = [];
+    var updatingItemId = 0;
+    var editObj;
+    var tableUpdating = 0;
+    var table;
+    var resetPassword = false;
+     
+    const submitButton = document.getElementById('btnUpdateItem');
+    submitButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        submitButton.setAttribute('data-kt-indicator', 'on');
+        // Disable button to avoid multiple click
+        submitButton.disabled = true;
+        // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+        validateInput(updatingItemId);
+        //updateItem(updatingItemId);
+    });
+    $('#search-input').on("keypress", function (e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            table.search($(this).val()).draw();
+        }
+    });
+    $(".none-space").on("keypress", function (e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            submitButton.setAttribute('data-kt-indicator', 'on');
+            // Disable button to avoid multiple click
+            submitButton.disabled = true;
+            // Simulate form submission. For more info check the plugin's official documentation: https://sweetalert2.github.io/
+            validateInput(updatingItemId);
+        }
+    });
+    $(document).ready(function () {
+        // Load data
+        loadData();
+        loadDataSelectAccountStatus();
+        // Datetime picker
+        const linkedPicker1Element = document.getElementById("fillter_startDate");
+        linked1 = new tempusDominus.TempusDominus(linkedPicker1Element, {
+            display: {
+                components: {
+                    clock: false
+                },
+                buttons: {
+                    today: true,
+                    clear: true,
+                    close: true
+                },
+            },
+            localization: {
+                locale: "vi",
+                format: "dd/MM/yyyy",
+                startOfTheWeek: 1
+            }
+        });
+        linked2 = new tempusDominus.TempusDominus(document.getElementById("fillter_endDate"), {
+            display: {
+                components: {
+                    clock: false
+                },
+                buttons: {
+                    today: true,
+                    clear: true,
+                    close: true
+                },
+            },
+            localization: {
+                locale: "vi",
+                format: "dd/MM/yyyy",
+                startOfTheWeek: 1
+            }
+        });
+        // updateOption
+        linked2.updateOptions({
+            useCurrent: false,
+        });
+        //using event listeners
+        linkedPicker1Element.addEventListener(tempusDominus.Namespace.events.change, (e) => {
+            var minDate = $("#fillter_startDate_value").val() == "" ? undefined : new Date(moment(e.detail.date).add(-1, "d"));
+            linked2.updateOptions({
+                restrictions: {
+                    minDate: minDate
+                },
+            });
+        });
+        const subscription = linked2.subscribe(tempusDominus.Namespace.events.change, (e) => {
+
+            var maxdate = $("#fillter_endDate_value").val() == "" ? undefined : new Date(moment(e.date).add(1, "d"));
+            linked1.updateOptions({
+                restrictions: {
+                    maxDate: maxdate
+                },
+            });
+        });
+
+        $('.dataSelect').select2();
+
+
+        $("#btnTableSearch").click(function () {
+            tableSearch();
+        });
+
+        $("#tableData thead:nth-child(2) tr th input").keypress(function (e) {
+            let key = e.which;
+            if (key == 13) {
+                $("#btnTableSearch").click();
+            }
+        });
+        $("#btnTableResetSearch").click(function () {
+            $(".tableheaderFillter").val("").trigger("change");
+            tableSearch();
+        });
+        $("#reset_Password").on("click", function (event) {
+            event.preventDefault();
+            resetPassword = true;
+            $("#account-password").prop("disabled", false);
+            $("#account-password").prop("readonly", false);
+            //$("#account-password").val("");
+        });
+        $(".btn_show_pass").on("click", function (e) {
+            var target = $($(this).attr("data-target"));
+            if (target.attr("type") == "password") {
+                target.attr("type", "text");
+                $(this).html(`<i class="ki-duotone ki-eye-slash fs-3">
+                                                                                                                                <span class="path1 ki-uniEC07"></span>
+                                                                                                                                <span class="path2 ki-uniEC08"></span>
+                                                                                                                                <span class="path3 ki-uniEC09"></span>
+                                                                                                                                <span class="path4 ki-uniEC0A"></span>
+                                                                                                                            </i>`);
+            }
+            else {
+                target.attr("type", "password");
+                $(this).html(`<i class="ki-duotone ki-eye fs-3">
+                                                                                                                                <span class="path1 ki-uniEC0B"></span>
+                                                                                                                                <span class="path2 ki-uniEC0B"></span>
+                                                                                                                                <span class="path3 ki-uniEC0D"></span>
+                                                                                                                            </i>`);
+            }
+        });
+    });
+    function loadData() {
+        initTable();
+    }
+    function initTable() {
+        table = $('#tableData').DataTable({
+            processing: true,
+            serverSide: true,
+            paging: true,
+            searching: { regex: true },
+            order: [6, 'desc'],
+            "oLanguage": {
+                "sUrl": "/js/Vietnamese.json"
+            },
+            ajax: {
+                url: systemURL + "accountBuy/api/list-server-side",
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: function (d) {
+                    d.searchAll = $("#search-input").val();
+                    return JSON.stringify(d);
+                }
+            },
+            columns: [
+                {
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        var info = table.page.info();
+                        var stt = meta.row + 1 + info.page * info.length;
+                        return stt;
+                    }
+                },
+                {
+                    data: "username",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-id'>" + data + "<span>";
+                    },
+                },
+                {
+                    data: "password",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-id'>" + data + "<span>";
+                    },
+                },
+                {
+                    data: "accountStatusName",
+                    render: function (data, type, row, meta) {
+                        let color = row.accountStatusId == @AccountStatusId.ACTIVE ? "#04B440" : "#d02550";
+                        return "<span id='row" + row.id + "-column-id' class='badge py-3 px-4' style='background-color:" + customBagdeColor(color) + "; color : " + color + "; font-size:13px;'>" + data + "<span>";
+                    },
+                },
+                {
+                    data: "fullName",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-id'>" + data + "<span>";
+                    },
+                },
+
+                
+                {
+                    data: "email",
+                    render: function (data, type, row, meta) {
+                        return "<span id='row" + row.id + "-column-id'>" + data + "<span>";
+                    },
+                },
+                {
+                    data: "createdTime",
+                    render: function (data) {
+                        var tempDate = new Date(data);
+                        var displayValue = moment(data).format("DD/MM/YYYY HH:mm:ss");
+                        return displayValue;
+                    }
+                },
+                {
+                    data: 'id',
+                    render: function (data, type, row, meta) {
+                        return "<div class='d-flex justify-content-center gap-2'>"
+                            + "<a title='Cập nhật' onclick='editItem(" + row.id + ")' class='me-2 btn_manage c_pointer'><span class='svg-icon-success svg-icon  svg-icon-1 svg_teh009'><span class='svg-icon-primary svg-icon  svg-icon-1'> <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path opacity='0.3' fill-rule='evenodd' clip-rule='evenodd' d='M2 4.63158C2 3.1782 3.1782 2 4.63158 2H13.47C14.0155 2 14.278 2.66919 13.8778 3.04006L12.4556 4.35821C11.9009 4.87228 11.1726 5.15789 10.4163 5.15789H7.1579C6.05333 5.15789 5.15789 6.05333 5.15789 7.1579V16.8421C5.15789 17.9467 6.05333 18.8421 7.1579 18.8421H16.8421C17.9467 18.8421 18.8421 17.9467 18.8421 16.8421V13.7518C18.8421 12.927 19.1817 12.1387 19.7809 11.572L20.9878 10.4308C21.3703 10.0691 22 10.3403 22 10.8668V19.3684C22 20.8218 20.8218 22 19.3684 22H4.63158C3.1782 22 2 20.8218 2 19.3684V4.63158Z' fill='currentColor'></path><path d='M10.9256 11.1882C10.5351 10.7977 10.5351 10.1645 10.9256 9.77397L18.0669 2.6327C18.8479 1.85165 20.1143 1.85165 20.8953 2.6327L21.3665 3.10391C22.1476 3.88496 22.1476 5.15129 21.3665 5.93234L14.2252 13.0736C13.8347 13.4641 13.2016 13.4641 12.811 13.0736L10.9256 11.1882Z' fill='currentColor'></path><path d='M8.82343 12.0064L8.08852 14.3348C7.8655 15.0414 8.46151 15.7366 9.19388 15.6242L11.8974 15.2092C12.4642 15.1222 12.6916 14.4278 12.2861 14.0223L9.98595 11.7221C9.61452 11.3507 8.98154 11.5055 8.82343 12.0064Z' fill='currentColor'></path></svg></span></span></a>"
+                            + (row.accountStatusId == @AccountStatusId.ACTIVE ?
+                                "<a title='Khóa tài khoản' onclick='lockAccount(" + row.id + ")' class='me-2 btn_manage c_pointer'><span class='svg-icon-success svg-icon  svg-icon-1 svg_teh009'><span class='svg-icon-danger svg-icon  svg-icon-1'><svg width = '24' height = '24' viewBox = '0 0 24 24' fill = 'none' xmlns = 'http://www.w3.org/2000/svg'><rect opacity='0.3' x = '2' y = '2' width = '20' height = '20' rx = '10' fill = 'currentColor' /><path d='M15.8054 11.639C15.6757 11.5093 15.5184 11.4445 15.3331 11.4445H15.111V10.1111C15.111 9.25927 14.8055 8.52784 14.1944 7.91672C13.5833 7.30557 12.8519 7 12 7C11.148 7 10.4165 7.30557 9.80547 7.9167C9.19432 8.52784 8.88885 9.25924 8.88885 10.1111V11.4445H8.66665C8.48153 11.4445 8.32408 11.5093 8.19444 11.639C8.0648 11.7685 8 11.926 8 12.1112V16.1113C8 16.2964 8.06482 16.4539 8.19444 16.5835C8.32408 16.7131 8.48153 16.7779 8.66665 16.7779H15.3333C15.5185 16.7779 15.6759 16.7131 15.8056 16.5835C15.9351 16.4539 16 16.2964 16 16.1113V12.1112C16.0001 11.926 15.9351 11.7686 15.8054 11.639ZM13.7777 11.4445H10.2222V10.1111C10.2222 9.6204 10.3958 9.20138 10.7431 8.85421C11.0903 8.507 11.5093 8.33343 12 8.33343C12.4909 8.33343 12.9097 8.50697 13.257 8.85421C13.6041 9.20135 13.7777 9.6204 13.7777 10.1111V11.4445Z' fill = 'currentColor' /></svg></span></a>" : "")
+                            + "<a title='Cập nhật' onclick='deleteItem(" + row.id + ")' class='me-2 btn_manage'><span class='svg-icon-success svg-icon  svg-icon-1 svg_teh009'><span class='svg-icon-danger svg-icon  svg-icon-1'><svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M5 9C5 8.44772 5.44772 8 6 8H18C18.5523 8 19 8.44772 19 9V18C19 19.6569 17.6569 21 16 21H8C6.34315 21 5 19.6569 5 18V9Z' fill='currentColor'></path><path opacity='0.5' d='M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V5C19 5.55228 18.5523 6 18 6H6C5.44772 6 5 5.55228 5 5V5Z' fill='currentColor'></path><path opacity='0.5' d='M9 4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V4H9V4Z' fill='currentColor'></path></svg></span></a>"
+                            + "</div>";
+                    }
+                },
+
+            ],
+            columnDefs: [
+                { targets: "no-sort", orderable: false },
+                { targets: "no-search", searchable: false },
+                { orderable: false, targets: [-1, 0] },
+            ],
+            aLengthMenu: [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+            drawCallback: function () {
+                $('#tableData tfoot').html("");
+                $("#tableData thead:nth-child(1) tr").clone(true).appendTo("#tableData tfoot");
+                $('#tableData tfoot tr').addClass("border-top");
+            }
+        });
+    }
+    function customBagdeColor(color) {
+        var percent = 80;
+        var fontColor = "";
+        var backColor = color;
+        // strip the leading # if it's there
+        color = color.replace(/^\s*#|\s*$/g, '');
+
+        // convert 3 char codes --> 6, e.g. `E0F` --> `EE00FF`
+        if (color.length == 3) {
+            color = color.replace(/(.)/g, '$1$1');
+        }
+
+        var r = parseInt(color.substr(0, 2), 16),
+            g = parseInt(color.substr(2, 2), 16),
+            b = parseInt(color.substr(4, 2), 16);
+
+        return '#' +
+            ((0 | (1 << 8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
+            ((0 | (1 << 8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
+            ((0 | (1 << 8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+    }
+    async function editItem(id) {
+        resetPassword = false;
+        $("#title-modal-account").text(id > 0 ? "Cập nhật tài khoản" : "Tạo mới tài khoản");
+        updatingItemId = id;
+        $("#modal-account").modal('show');
+        if (id > 0) {
+            editObj = await getItemById(id);
+            $("#account-password").prop("disabled", true);
+            $("#account-password").prop("readonly", true);
+            $("#account-username").prop("disabled", true);
+            $("#account-username").prop("readonly", true);
+            $("#reset_Password").removeClass("d-none");
+            $("#reset_Password").css("display", "block");
+        }
+        else {
+            resetPassword = true;
+            $("#account-password").prop("disabled", false);
+            $("#account-password").prop("readonly", false);
+            $("#account-username").prop("disabled", false);
+            $("#account-username").prop("readonly", false);
+            $("#reset_Password").addClass("d-none");
+        }
+        $("#account-id").val(id > 0 ? editObj.id : "0");
+        $("#account-statusId").val(id > 0 ? editObj.accountStatusId : "").trigger("change");
+        $("#account-username").val(id > 0 ? editObj.username : "");
+        $("#account-password").val(id > 0 ? editObj.password : "");
+        $("#account-fullName").val(id > 0 ? editObj.fullName : "");
+        $("#account-email").val(id > 0 ? editObj.email : "");
+
+        formatNumber();
+    }
+    function isEmailAddress(str) {
+        var pattern = /^\w+@@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+        if (str.match(pattern)) {
+            return true;
+        }
+        else {
+            return false;
+        };
+    }
+    function validateInput(id) {
+        let titleError = id > 0 ? "Cập nhật tài khoản không thành công" : "Tạo mới tài khoản không thành công";
+        var errorList = [];
+        
+        if ($("#account-username").val().length == 0) {
+            errorList.push("Tên đăng nhập không được để trống");
+        }
+
+        if ($("#account-password").val().length == 0 && resetPassword) {
+            errorList.push("Mật khẩu không được để trống");
+        }
+        if ($("#account-password").val().length < 6 && $("#account-password").val().length > 0) {
+            errorList.push("Mật khẩu phải có tối thiểu 6 kí tự");
+        }
+
+        if ($("#account-fullName").val().length == 0) {
+            errorList.push("Họ tên không được để trống");
+        }
+        if ($("#account-statusId").val() == null) {
+            errorList.push("Chưa chọn trạng thái tài khoản");
+        }
+        if (!isEmailAddress($("#account-email").val())) {
+            errorList.push("Email chưa đúng định dạng");
+        }
+        if ($("#account-email").val().length == 0) {
+            errorList.push("Email không được để trống");
+        }
+        if (errorList.length > 0) {
+            var contentError = "<ul>";
+            errorList.forEach(function (item, index) {
+                contentError += "<li class='text-start'>" + item + "</li>";
+            });
+            contentError += "</ul>";
+            submitButton.removeAttribute('data-kt-indicator');
+            // Enable button
+            submitButton.disabled = false;
+            Swal.fire(
+                titleError,
+                contentError,
+                'warning'
+            );
+        }
+        else {
+            resetPassword = false;
+            updateItem(id);
+        }
+    }
+    
+    async function updateItem(id) {
+        var actionName = (id == 0 ? "Bạn muốn tạo mới" : "Cập nhật");
+        var obj;
+        if (id > 0) {
+            obj = await getItemById(id);
+        }
+        let objName = id > 0 ? obj.name : "tài khoản";
+        //validateInputNumber();
+        var updatingObj = {
+            id: $("#account-id").val(),
+            username: $("#account-username").val(),
+            accountStatusId: $("#account-statusId").val(),
+            password: $("#account-password").val(),
+            fullName: $("#account-fullName").val(),
+            email: $("#account-email").val(),
+        };
+        Swal.fire({
+            title: 'Xác nhận thay đổi?',
+            text: "" + actionName + "",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#443',
+            confirmButtonText: 'Xác nhận',
+            cancelButtonText: 'Huỷ'
+        }).then((result) => {
+            if (result.value) {
+                $("#modal-id").modal('hide');
+                //CALL AJAX TO UPDATE
+                if (id > 0) {
+                    $.ajax({
+                        url: systemURL + "accountBuy/api/update",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(updatingObj),
+                        beforeSend: function (xhr) {
+                            if (localStorage.token) {
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.token);
+                            }
+                        },
+                        success: function (responseData) {
+                            // debugger;
+                            if (responseData.status == 200 && responseData.message === "SUCCESS") {
+                                $("#modal-account").modal('hide');
+
+                                Swal.fire(
+                                    'Thành Công!',
+                                    'Đã cập nhật',
+                                    'success'
+                                );
+                                resetPassword = false;
+                                reGenTable();
+                                // Remove loading indication
+                                submitButton.removeAttribute('data-kt-indicator');
+                                // Enable button
+                                submitButton.disabled = false;
+                            }
+                        },
+                        error: function (e) {
+                            //console.log(e.message);
+                            Swal.fire(
+                                'Lỗi!',
+                                'Đã xảy ra lỗi, vui lòng thử lại',
+                                'error'
+                            );
+                            resetPassword = false;
+                            // Remove loading indication
+                            submitButton.removeAttribute('data-kt-indicator');
+                            // Enable button
+                            submitButton.disabled = false;
+                        }
+                    });
+                };
+                //CALL AJAX TO CREATE
+                if (id == 0) {
+                    delete updatingObj.id;
+                    $.ajax({
+                        url: systemURL + "accountBuy/api/add",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(updatingObj),
+                        success: function (responseData) {
+                            // debugger;
+                            if (responseData.status == 201 && responseData.message === "CREATED") {
+                                $("#modal-account").modal('hide');
+                                Swal.fire(
+                                    'Thành công!',
+                                    'Đã thêm tài khoản',
+                                    'success'
+                                );
+                                
+                                updatingObj = responseData.data;
+                                reGenTable();
+                                // Remove loading indication
+                                submitButton.removeAttribute('data-kt-indicator');
+                                // Enable button
+                                submitButton.disabled = false;
+                            }
+                        },
+                        error: function (e) {
+                            //console.log(e.message);
+                            Swal.fire(
+                                'Lỗi!',
+                                'Đã xảy ra lỗi, vui lòng thử lại',
+                                'error'
+                            );
+                            // Remove loading indication
+                            submitButton.removeAttribute('data-kt-indicator');
+                            // Enable button
+                            submitButton.disabled = false;
+                        }
+                    });
+                }
+            }
+            else {
+                // Remove loading indication
+                submitButton.removeAttribute('data-kt-indicator');
+                // Enable button
+                submitButton.disabled = false;
+                
+            }
+        });
+    }
+    async function deleteItem(id) {
+        Swal.fire({
+            title: 'Xác nhận thay đổi?',
+            text: "Xóa ",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Xoá',
+            cancelButtonText: 'Huỷ'
+        }).then((result) => {
+            if (result.value) {
+                //CALL AJAX TO DELETE
+                $.ajax({
+                    url: systemURL + "accountBuy/api/delete",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ "id": id }),
+                    success: function (responseData) {
+                        // debugger;
+                        if (responseData.status == 200 && responseData.message === "SUCCESS") {
+                            Swal.fire(
+                                'Thành công!',
+                                'Đã xoá ',
+                                'success'
+                            );
+                            reGenTable();
+                        }
+                    },
+                    error: function (e) {
+                        //console.log(e.message);
+                        Swal.fire(
+                            'Lỗi!',
+                            'Đã xảy ra lỗi, vui lòng thử lại',
+                            'error'
+                        );
+                    }
+                });
+
+            }
+            else {
+                // Remove loading indication
+                submitButton.removeAttribute('data-kt-indicator');
+                // Enable button
+                submitButton.disabled = false;
+            }
+        });
+    }
+    async function getItemById(id) {
+        var data;
+        await $.ajax({
+            url: systemURL + "accountBuy/api/detail2/" + id,
+            method: "GET",
+            success: function (responseData) {
+                data = responseData;
+            },
+            error: function (e) {
+            },
+        });
+        return data;
+    }
+
+    function reGenTable() {
+        tableUpdating = 0;
+        table.destroy();
+        $(".tableHeaderFilter").val(null).trigger("change");
+        $("#tableData tbody").html('');
+        loadData();
+    }
+    
+    function loadDataSelectAccountStatus() {
+        $.ajax({
+            url: systemURL + 'accountStatus/api/list',
+            type: 'GET',
+            async: 'true',
+            contentType: 'application/json',
+            success: function (responseData) {
+                var data = responseData.data;
+                accountTypeData = data;
+                accountTypeData.forEach(function (item) {
+                    $('#account-statusId').append(new Option(item.name, item.id, false, false));
+                    $('#filterAccountStatusId').append(new Option(item.name, item.id, false, false));
+                })
+            },
+            error: function (e) {
+                //console.log(e.message);
+            }
+        });
+    }
+    function lockAccount(accountId) {
+        Swal.fire({
+            title: 'Xác nhận thay đổi?',
+            text: "Khóa tài khoản",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Khóa',
+            cancelButtonText: 'Huỷ'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: systemURL + 'accountBuy/api/lock-account',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ "id": accountId }),
+                    success: function (e) {
+                        Swal.fire(
+                            "Thành công",
+                            "Đã khóa tài khoản",
+                            "success"
+                        );
+                        reGenTable();
+                    },
+                    error: function (e) {
+                        Swal.fire(
+                            'Lỗi!',
+                            'Đã xảy ra lỗi, vui lòng thử lại',
+                            'error'
+                        );
+                    }
+                });
+            }
+            else {
+                // Remove loading indication
+                submitButton.removeAttribute('data-kt-indicator');
+                // Enable button
+                submitButton.disabled = false;
+            }
+        });
+    }
+    
+</script>
+<!--end:Base load data-->
+<!--begin:setting in data table-->
+<script>
+    function tableSearch() {
+        table.column(1).search($("#tableData thead:nth-child(2) tr th:nth-child(2) input").val());
+        table.column(2).search($("#tableData thead:nth-child(2) tr th:nth-child(3) input").val());
+        table.column(3).search($("#tableData thead:nth-child(2) tr th:nth-child(4) select").val());
+        table.column(4).search($("#tableData thead:nth-child(2) tr th:nth-child(5) input").val());
+        table.column(5).search($("#tableData thead:nth-child(2) tr th:nth-child(6) input").val());
+        if ($("#fillter_startDate_value").val().length > 0 || $("#fillter_endDate_value").val().length > 0) {
+
+            var minDate = $("#fillter_startDate_value").val();
+            var maxDate = $("#fillter_endDate_value").val();
+            let searchDateArrs = [];
+
+            if (minDate.length > 0) {
+                searchDateArrs.push(moment(minDate, "DD/MM/YYYY").format("YYYY-MM-DD 00:00:00"))
+
+            }
+            else {
+                searchDateArrs.push("")
+            }
+            if (maxDate.length > 0) {
+                searchDateArrs.push(moment(maxDate, "DD/MM/YYYY").format("YYYY-MM-DD 23:59:59"))
+            }
+            else {
+                searchDateArrs.push("")
+            }
+            table.column(6).search(searchDateArrs.toString());
+        }
+        else {
+            table.column(6).search("");
+        }
+        table.draw();
+    }
+</script>
+<!--end:setting in data table-->
